@@ -11,9 +11,11 @@ async function SwitchBranch(branch)
     }
     if(gitstatus.modified.length >0)
     {
-        await git.add('./*')
-            .commit('Changes')
+        await git.add('./*').commit('Changes')
     }
+    let remotes = await git.listRemote(['--heads', '--tags']);
+    console.log(remotes);
+    
 }
 
 module.exports = SwitchBranch;
