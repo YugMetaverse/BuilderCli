@@ -14,7 +14,7 @@ async function SwitchBranch(branch)
         await git.add('./*').commit('Changes')
     }
     let remotes = await git.listRemote(['--heads', '--tags']);
-    console.log(remotes[0]);
+console.log(remotes);
     
 }
 
