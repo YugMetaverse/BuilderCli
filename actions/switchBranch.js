@@ -14,7 +14,10 @@ async function SwitchBranch(branch)
         await git.add('./*').commit('Changes')
     }
     let remotes = await git.listRemote(['--heads', '--tags']);
-console.log(remotes);
+    if(remotes.include('refs/heads/npm'))
+    {
+        console.log("npm branch exists");
+    }
     
 }
 
