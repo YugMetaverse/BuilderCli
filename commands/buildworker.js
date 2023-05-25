@@ -1,4 +1,3 @@
-// buildCommand.js
 const { Command } = require('commander');
 const readline = require('readline');
 
@@ -6,7 +5,7 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const buildCommand = new Command('buildworker')
+const buildWorker = new Command('buildworker')
   .description('Build the Yug Application. This internaly interfaces with the Unreal CLI.')
   .argument('<test>', 'string to split')
   .argument('[test]', 'string to split')
@@ -35,4 +34,4 @@ const buildCommand = new Command('buildworker')
     console.log('Loop stopped');
   });
 
-module.exports = buildCommand;
+module.exports = buildWorker;
