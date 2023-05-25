@@ -1,5 +1,5 @@
 const { spawn } = require("child_process");
-const { getConfig } = require("../lib/config");
+const { getConfig } = require("../configuration/config");
 
 function buildApplication(){
     const config = getConfig();

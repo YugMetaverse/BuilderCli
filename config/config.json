@@ -1,3 +1,7 @@
 {
-  "platform": "Mac"
+  "platform": "Mac",
+  "buildtype": "Shipping",
+  "unrealpath": "/Applications/Unreal Engine.app",
+  "projectpath": "/Users/username/Documents/MyProject",
+  "archivepath": "/Users/user/Desktop/Indialand"
 }
