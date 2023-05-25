@@ -1,10 +1,13 @@
 const { Command } = require('commander');
-const inquirer = require('inquirer');
 const { buildApplication } = require('../buildscripts/buildApp');
+const buildPlugin = require('../buildscripts/buildPlugin');
+const buildRelease = require('../buildscripts/buildRelease');
 const SwitchBranch = require('../actions/switchBranch');
 const SwitchTag = require('../actions/switchTag');
+const config = require('./configuration/config');
+const getKeys = require('./configuration/keys');
 
-const buildCommand = new Command('build')
+const buildAppCommand = new Command('buildapp')
   .description('Build the Yug Application. This internaly interfaces with the Unreal CLI.')
   .argument('[buildType]', 'Type to Build: Server, Client, Plugin')
   .argument('[buildEnvironment]', 'Environment to Build: Shipping, Development')
@@ -13,13 +16,14 @@ const buildCommand = new Command('build')
   .option('-b, --branch <char>', 'Branch to Build')
   .option('-t, --tag <char>', 'Tag of the Branch to Build')
   .action(async(buildType, buildEnvironment, options) => {
-    console.log(options);
     options["buildType"] = buildType;
     options["buildEnvironment"] = buildEnvironment;
     if(options.branch && options.tag)
     {
       throw new Error("Cannot have both branch and tag");
     }
+    let configData = await config.confirmConfig(getKeys("buildApp"));
+
     if(options.remote){
       console.log("hello");
     }
@@ -32,8 +36,8 @@ const buildCommand = new Command('build')
       console.log("tags");
     }
 
-    // buildApplication();
+    // buildApplication(configData);
   
   });
 
-module.exports = buildCommand;
+module.exports = buildAppCommand;
