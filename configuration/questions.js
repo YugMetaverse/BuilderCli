@@ -1,5 +1,11 @@
-function getQuestions(buildProcess="any", existingdata = {}){
+const availableValues = require ('../configuration/availablevalues');
+
+function getQuestions(buildKeys, existingdata){
+    function getOptionDefault(propName) {
+        return existingdata.hasOwnProperty(propName) ? existingdata[propName] : availableValues[propName][0];
+    }
     const questions = [
+        //platform
         {
             type: 'list',
             name: 'platform',
@@ -19,51 +25,89 @@ function getQuestions(buildProcess="any", existingdata = {}){
             },
             message: 'Select the Platform to Build',
         },
+        //buildconfig
         {
             type: 'list',
-            name: 'buildtype',
-            choices: [ "Development",  "Shipping" ],
-            message: 'Select the Build Type',
-            default: 'Shipping'
+            name: 'buildconfig',
+            choices: availableValues.buildconfig,
+            message: 'Select the Build Configuration',
+            default: getOptionDefault('buildconfig'),
+            when: answers => { return buildKeys.includes('buildconfig'); }
         },
+        //unrealbasepath
         {
             type: 'input',
-            name: 'unrealpath',
+            name: 'unrealbasepath',
             message: 'Enter the Unreal Installation Path',
-            default: (answers) => {
-               return (existingdata.hasOwnProperty('unrealpath') ? existingdata.unrealpath :  "/Applications/Unreal Engine.app");
-            }
+            default: (answers) => { 
+                if (existingdata.hasOwnProperty('unrealbasepath')) {
+                    return existingdata.unrealbasepath;
+                }
+                else{
+                    if(process.platform === "darwin"){
+                        return "/Users/Shared/Epic Games/UE_5.1";
+                    }
+                    else if(process.platform === "win32"){ 
+                        return "C:/Program Files/Epic Games/UE_5.1";
+                    }
+                    else if(process.platform === "linux"){
+                        return "/opt/UnrealEngine/5.1";
+                    }
+                    return "C:/Program Files/Epic Games/UE_5.1";
+                } 
+            },
+            when:  answers => { return buildKeys.includes('unrealbasepath') }
         },
+        //projectbasepath
         {
             type: 'input',
-            name: 'projectpath',
-            message: 'Enter the Project Path',
-            default: (answers) => {
-                return (existingdata.hasOwnProperty('projectpath') ? existingdata.projectpath :  "/Users/username/Documents/MyProject");
-            }
+            name: 'projectbasepath',
+            message: 'Enter the Project Base Path',
+            default: (answers) => { return existingdata.hasOwnProperty("projectbasepath") ? existingdata["projectbasepath"] : "/Users/utkarshshukla/Unreal/yugue5"; },
+            when: (answers) => { return buildKeys.includes('projectbasepath'); }
         },
+        //archivedDirectory
         {
             type: 'input',
-            name: 'archivepath',
+            name: 'archivedirectory',
             message: 'Enter the Path to Archive the Project',
-            default: (answers) => {
-                return (existingdata.hasOwnProperty('archivepath') ? existingdata.projectpath :  "/Users/user/Desktop/Indialand");
-            }
+            default: (answers) => { return existingdata.hasOwnProperty("archivedirectory") ? existingdata["archivedirectory"] : answers.projectbasepath + "/Packaged"; },
+            when:  (answers) => { return buildKeys.includes('archivedirectory'); }
         },
+        //projectname
+        {
+            type: 'input',
+            name: 'projectname',
+            message: 'Enter the Project Name',
+            default: (answers) => { return existingdata.hasOwnProperty("projectname") ? existingdata["projectname"] : "YugGAS"; },
+            when:  (answers) => { return buildKeys.includes('projectname'); }
+        },
+        //release 
         {
             type: 'input',
             name: 'releaseversion',
             message: 'Enter the Release Version',
-            default: (answers) => {
-                return (existingdata.hasOwnProperty('releaseversion') ? existingdata.releaseversion :  "1.0.0");
-            },
+            default: (answers) => { return existingdata.hasOwnProperty("releaseversion") ? existingdata["releaseversion"] : "1.0.0"; },
             when: (answers) => {
-                return buildProcess === "releaseBuild";
+                return buildKeys.includes('releaseversion');
             }
         }
     ];
     return questions;
-    
 }
 
-module.exports = getQuestions;
+function getConfirmQuestion(){
+    let questions = [
+        {
+            type: 'confirm',
+            name: 'confirm',
+            message: 'Do you confirm your config? (Yes/No)',
+            default: true
+        }];
+    return questions;
+}
+
+module.exports = {
+    getQuestions,   
+    getConfirmQuestion
+}

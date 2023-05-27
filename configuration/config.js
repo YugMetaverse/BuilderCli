@@ -1,6 +1,6 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
-const getQuestions = require('./questions');
+const { getQuestions, getConfirmQuestion } = require('./questions');
 const chalk = require('chalk');
 
 
@@ -74,23 +74,14 @@ async function initConfig(buildKeys, overrideValues = {}, existingconfigData = {
 
 async function confirmConfig(buildKeys, overrideValues = {}){
     let configData = await getConfig(buildKeys, overrideValues);
-    console.log("Your Current Config is: ")
+
+    console.log(chalk.magentaBright("Your Current Config is: "));
     var keys = Object.keys(configData);
     for (var i = 0; i < keys.length; i++) {
         console.log(chalk.blueBright(keys[i] + ": " + configData[keys[i]]));
     }
-    let questions = [
-        {
-            type: 'confirm',
-            name: 'confirm',
-            message: 'Do you want to change the config? (Yes/No)',
-            default: false
-        }];
-    const answer = await inquirer.prompt(questions);
-    if(answer.confirm === "Yes")
-    {
-        return await initConfig(buildKeys, overrideValues, configData);
-    }
+    const answer = await inquirer.prompt(getConfirmQuestion());
+    if(!answer.confirm) { return await initConfig(buildKeys, overrideValues, configData); }
     return configData;
 }
 

@@ -1,43 +1,33 @@
-const { Command } = require('commander');
+const { Command, Argument, Option } = require('commander');
 const { buildApplication } = require('../buildscripts/buildApp');
 const buildPlugin = require('../buildscripts/buildPlugin');
-const buildRelease = require('../buildscripts/buildRelease');
-const SwitchBranch = require('../actions/switchBranch');
-const SwitchTag = require('../actions/switchTag');
-const config = require('./configuration/config');
-const getKeys = require('./configuration/keys');
+const gitActions = require('../actions/git/gitActions');
+const config = require('../configuration/config');
+const getKeys = require('../configuration/keys');
+const availableValues  = require('../configuration/availablevalues');
+const { validatebuildcli } = require('../helpers/validation');
+
 
 const buildAppCommand = new Command('buildapp')
   .description('Build the Yug Application. This internaly interfaces with the Unreal CLI.')
-  .argument('[buildType]', 'Type to Build: Server, Client, Plugin')
-  .argument('[buildEnvironment]', 'Environment to Build: Shipping, Development')
+  .addArgument(new Argument('<buildtype>', 'Type to Build:').choices(availableValues.buildtype))
+  .addOption(new Option('-b, --buildconfig <buildconfig>', 'Build Configuration:').choices(availableValues.buildconfig))
   .option('-r, --remote ', 'Remote Build by Downloading the Repository from Scratch')
   .option('-g, --gitswitch ', 'Enable Git Actions like Branch and Tag Switch')
   .option('-b, --branch <char>', 'Branch to Build')
   .option('-t, --tag <char>', 'Tag of the Branch to Build')
-  .action(async(buildType, buildEnvironment, options) => {
-    options["buildType"] = buildType;
-    options["buildEnvironment"] = buildEnvironment;
-    if(options.branch && options.tag)
-    {
-      throw new Error("Cannot have both branch and tag");
-    }
-    let configData = await config.confirmConfig(getKeys("buildApp"));
+  .action(async(buildtype, options) => {
+    options["buildtype"] = buildtype;
+    validatebuildcli(options);
+    let configData = await config.confirmConfig(getKeys(buildtype, options),  options);
 
-    if(options.remote){
-      console.log("hello");
-    }
-    if(options.branch)
-    {
-      await SwitchBranch(options.branch);
-    }
-    if(options.tag)
-    {
-      console.log("tags");
-    }
-
-    // buildApplication(configData);
+    if(options.remote){ console.log("We Will Clone the repo"); }
+    if(options.branch){ await gitActions.SwitchBranch(options.branch); }
+    if(options.tag) { await gitActions.SwitchTag(options.tag); }
   
+    if(buildtype == "client" || buildtype == "server" || buildtype == "release"){
+      await buildApplication(configData);
+    }
   });
 
 module.exports = buildAppCommand;

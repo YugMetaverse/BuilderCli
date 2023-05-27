@@ -1,10 +1,9 @@
 const { spawn } = require("child_process");
 const { getConfig } = require("../configuration/config");
+const buildlib = require("../helpers/lib");
 
-function buildApplication(){
-    const config = getConfig();
-    
-    const command = '/Users/Shared/Epic Games/UE_5.1/Engine/Build/BatchFiles/RunUAT.command';
+async function buildApplication(config){
+    const command = config.unrealbasepath +'/Engine/Build/BatchFiles/RunUAT.command';
     const args = [
     'BuildCookRun',
     '-nop4',
@@ -12,9 +11,8 @@ function buildApplication(){
     '-nocompileeditor',
     '-skipbuildeditor',
     '-cook',
-    '-project="'+ config.projectPath +'/YugGAS.uproject"',
-    '-target=YugGAS',
-    '-unrealexe="/Users/Shared/Epic Games/UE_5.1/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor"',
+    '-project="'+ config.projectbasepath +'/'+config.projectname+'.uproject"',
+    '-target='+config.projectname,
     '-platform='+ config.platform,
     '-SkipCookingEditorContent',
     '-installed',
@@ -24,14 +22,15 @@ function buildApplication(){
     '-build',
     '-pak',
     '-compressed',
-    '-archivedirectory="/Users/utkarshshukla/Desktop/Indialand"',
+    '-archivedirectory="'+ config.archivedirectory +'"',
     '-distribution',
     '-manifests',
-    '-clientconfig=Shipping',
+    '-clientconfig='+config.buildconfig,
     '-nodebuginfo',
     '-nocompile',
     '-nocompileuat',
     ];
+
 
     const builder = spawn(command, args);
 

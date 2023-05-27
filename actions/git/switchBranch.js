@@ -1,7 +1,7 @@
 const simpleGit = require('simple-git');
-const {getConfig} = require('../configuration/config');
+const {getConfig} = require('../../configuration/config');
 
-async function SwitchTag(branch)
+async function SwitchBranch(branch)
 {
     let config = getConfig("gitOps");
     const git = simpleGit('/Users/utkarshshukla/Unreal/BuilderCli', { config: [] });
@@ -32,4 +32,4 @@ async function SwitchTag(branch)
     }
 }
 
-module.exports = SwitchTag;
+module.exports = SwitchBranch;
