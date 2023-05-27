@@ -1,6 +1,6 @@
 const readline = require('readline');
 const https = require('https');
-const { Readable } = require('stream');
+const { Readable, PassThrough } = require('stream');
 
 function printDots(dotCount) {
     let dots = '';
@@ -16,8 +16,7 @@ function sleep(ms) {
 
 async function getServerStatus(){
     const url = 'your-public-file-url';
-    const readableStream = new Readable();
-    const jsonStream = readableStream.pipe(new PassThrough());
+    const jsonStream = new PassThrough();
 
     let responseObj = await new Promise((resolve, reject) => {
         https.get(url, (res) => {
