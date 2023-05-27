@@ -32,6 +32,7 @@ const buildPluginCommand = new Command('buildplugin')
     if(options.branch){ await gitActions.SwitchBranch(options.branch); }
     if(options.tag) { await gitActions.SwitchTag(options.tag); }
   
+    
     // await buildPlugin(configData);
   });
 
