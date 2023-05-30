@@ -7,6 +7,8 @@ const getKeys = require('../configuration/keys');
 const availableValues  = require('../configuration/availablevalues');
 const { validatebuildcli } = require('../helpers/validation');
 const savedconfig = require('../configuration/savedconfig');
+const { getpluginfolder, removepluginfolder } = require('../actions/file/filemanager');
+
 
 
 
@@ -44,13 +46,14 @@ const buildAppCommand = new Command('build')
     if(options.saveconfig){ await savedconfig.saveSavedConfig(options.saveconfig, mergedData); } 
     else if(buildmodule == "plugin"){ await savedconfig.saveSavedConfig("plugin_"+pluginname, mergedData); }
     
-    
+    if(buildmodule == "plugin"){ getpluginfolder(options); }
     if(options.remote){ console.log("We Will Clone the repo"); }
     if(options.branch){ await gitActions.SwitchBranch(options.branch); }
     if(options.tag) { await gitActions.SwitchTag(options.tag); }
   
     await buildApplication(configData);
 
+    removepluginfolder(options);
   });
 
 module.exports = buildAppCommand;
