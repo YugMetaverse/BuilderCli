@@ -21,7 +21,7 @@ async function buildApplication(config){
     ];
 
 
-    if(config.buildmodule === "release"){
+    if(config.buildmodule == "release"){
         args.push('-createreleaseversion='+config.releaseversion);
         args.push('-stagingdirectory="'+config.stagingdirectory+'"');
         args.push('-map=');
@@ -44,7 +44,7 @@ async function buildApplication(config){
         args.push('-platform='+ config.platform);
         args.push('-SkipCookingEditorContent');
         args.push('-nocompileuat');
-        if(config.buildtype === "server"){
+        if(config.buildtype == "server"){
             args.push('-server');
             args.push('-noclient'); 
             args.push('-serverconfig='+config.buildconfig);   
