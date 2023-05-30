@@ -1,1 +1,23 @@
--ScriptsForProject=/home/utkarsh/Unreal/yugue5/YugGAS.uproject BuildCookRun -project=/home/utkarsh/Unreal/yugue5/YugGAS.uproject -noP4 -clientconfig=Shipping -serverconfig=Shipping -nocompile -nocompileeditor -unrealexe=/home/utkarsh/Unreal/UnrealEngine/Engine/Binaries/Linux/UnrealEditor -utf8output -platform=Linux -build -cook -map= -CookCultures=en -pak -compressed -dlcname=India_map -DLCIncludeEngineContent -basedonreleaseversion=1.0 -stagebasereleasepaks -stage
+BuildCookRun
+-noP4
+-utf8output
+-nocompileeditor
+-cook
+-project=/home/utkarsh/Unreal/yugue5/YugGAS.uproject
+-stage
+
+-build
+-pak
+-compressed
+-nocompile
+
+-clientconfig=Shipping
+-serverconfig=Shipping
+-unrealexe=/home/utkarsh/Unreal/UnrealEngine/Engine/Binaries/Linux/UnrealEditor
+-platform=Linux
+-map=
+-CookCultures=en
+-dlcname=India_map
+-DLCIncludeEngineContent
+-basedonreleaseversion=1.0
+-stagebasereleasepaks

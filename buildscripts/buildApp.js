@@ -22,6 +22,7 @@ async function buildApplication(config){
 
 
     if(config.buildmodule == "release"){
+        args.push('-package');
         args.push('-createreleaseversion='+config.releaseversion);
         args.push('-stagingdirectory="'+config.stagingdirectory+'"');
         args.push('-map=');
@@ -42,18 +43,24 @@ async function buildApplication(config){
     else if(config.buildmodule == "plugin"){
         args.push('-serverconfig='+config.buildconfig);
         args.push('-clientconfig='+config.buildconfig); 
-        args.push('-serverplatform='+ config.platform);
-        args.push('-server');
-        args.push('-noclient');
         args.push('-map=');
         args.push('-CookCultures=en');
         args.push('-dlcname=' + config.dlcname);
         args.push('-DLCIncludeEngineContent');
         args.push('-basedonreleaseversion=' + config.releaseversion);  
         args.push('-stagebasereleasepaks');
+        if(config.buildtype == "server"){
+            args.push('-serverplatform='+ config.platform);
+            args.push('-server');
+            args.push('-noclient');
+        }
+        if(config.buildtype == "client"){
+            args.push('-platform='+ config.platform);
+        }
     }
-    else
+    else if(config.buildmodule == "app")
     {
+        args.push('-package');
         args.push('-archive');
         args.push('-archivedirectory="'+ config.archivedirectory +'"');
         args.push('-distribution');
