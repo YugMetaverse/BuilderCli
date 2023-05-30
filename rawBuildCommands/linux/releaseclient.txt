@@ -1,1 +1,22 @@
--ScriptsForProject=/home/utkarsh/Unreal/yugue5/YugGAS.uproject BuildCookRun -project=/home/utkarsh/Unreal/yugue5/YugGAS.uproject -noP4 -clientconfig=Shipping -serverconfig=Shipping -nocompile -nocompileeditor -unrealexe=/home/utkarsh/Unreal/UnrealEngine/Engine/Binaries/Linux/UnrealEditor -utf8output -platform=Linux -build -cook -map= -CookCultures=en -unversionedcookedcontent -pak -compressed -createreleaseversion=1.0 -stage -package -stagingdirectory=/home/utkarsh/Unreal/yugue5/Saved/StagedBuilds/ -cmdline=" -Messaging" -addcmdline="-SessionId=DD3FD32B20AE44BD9E2F8A2D8CF6CA61 -SessionOwner='utkarsh' -SessionName='Release Build' "
+-ScriptsForProject=/home/utkarsh/Unreal/yugue5/YugGAS.uproject
+BuildCookRun
+-noP4
+-utf8output
+-nocompileeditor
+-cook
+-project=/home/utkarsh/Unreal/yugue5/YugGAS.uproject
+-stage
+-package
+-build
+-pak
+-compressed
+-nocompile
+
+-createreleaseversion=1.0
+-stagingdirectory=/home/utkarsh/Unreal/yugue5/Saved/StagedBuilds/
+-map=
+-CookCultures=en
+-unversionedcookedcontent
+-platform=Linux
+-clientconfig=Shipping
+-serverconfig=Shipping

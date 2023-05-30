@@ -27,12 +27,18 @@ async function buildApplication(config){
         args.push('-map=');
         args.push('-CookCultures=en');
         args.push('-unversionedcookedcontent');
-        args.push('-serverplatform='+ config.platform);
-        args.push('-server');
-        args.push('-noclient');
         args.push('-serverconfig='+config.buildconfig);
         args.push('-clientconfig='+config.buildconfig);
+        if(config.buildtype == "server"){
+            args.push('-serverplatform='+ config.platform);
+            args.push('-server');
+            args.push('-noclient');
+        }
+        if(config.buildtype == "client"){
+            args.push('-platform='+ config.platform);
+        }
     }
+    
     else if(config.buildmodule == "plugin"){
         args.push('-serverconfig='+config.buildconfig);
         args.push('-clientconfig='+config.buildconfig); 
