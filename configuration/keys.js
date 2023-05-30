@@ -8,6 +8,7 @@ function getKeys(commandlinevalues={}){
     keys.push("projectname");
     keys.push("projectbasepath");
     keys.push("buildconfig");
+    keys.push("buildmodule");
     keys.push("buildtype");
     keys.push("platform");
     
@@ -18,9 +19,13 @@ function getKeys(commandlinevalues={}){
         keys.push("stagingdirectory");
     }
     else if(commandModule === "plugin"){
-        keys.push("dlcname");
+        keys.push("pluginname");
         keys.push("releaseversion");
-
+        if(commandlinevalues.localplugin || !commandlinevalues.remoteplugin){
+            keys.push("localplugin");
+        } else if(commandlinevalues.remoteplugin){
+            keys.push("remoteplugin");
+        }
     }
     else if(commandModule === "app"){
         keys.push("buildmodule");

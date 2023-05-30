@@ -87,7 +87,7 @@ function getQuestions(buildKeys, existingdata){
             type: 'input',
             name: 'releaseversion',
             message: 'Enter the Release Version',
-            default: (answers) => { return existingdata.hasOwnProperty("releaseversion") ? existingdata["releaseversion"] : "1.0.0"; },
+            default: (answers) => { return existingdata.hasOwnProperty("releaseversion") ? existingdata["releaseversion"] : "1.0"; },
             when: (answers) => {
                 return buildKeys.includes('releaseversion');
             }
@@ -108,10 +108,17 @@ function getQuestions(buildKeys, existingdata){
         },
         {
             type: 'input',
-            name: 'dlcname',
-            message: 'Enter the DLC Name',
-            default: (answers) => { return existingdata.hasOwnProperty("dlcname") ? existingdata["dlcname"] : "India_map"; },
-            when: (answers) => { return buildKeys.includes('dlcname'); } 
+            name: 'pluginname',
+            message: 'Enter the Plugin Name',
+            default: (answers) => { return existingdata.hasOwnProperty("pluginname") ? existingdata["pluginname"] : "India_map"; },
+            when: (answers) => { return buildKeys.includes('pluginname'); } 
+        },
+        {
+            type: 'input',
+            name: 'localplugin',
+            message: 'Enter the Local Plugin Path',
+            default: (answers) => { return existingdata.hasOwnProperty("localplugin") ? existingdata["localplugin"] : "/Users/utkarshshukla/indialand/India_map"; },
+            when: (answers) => { return buildKeys.includes('localplugin'); } 
         }
         
     ];

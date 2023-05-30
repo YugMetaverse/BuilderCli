@@ -1,28 +1,33 @@
 const fse = require('fs-extra');
 
-function getpluginfolder(options){
+async function getpluginfolder(options){
    if(options.localplugin){ 
-       moveplugintoproject(options);
+       await moveplugintoproject(options);
    } 
 }
 
-function moveplugintoproject(options){
+async function moveplugintoproject(options){
     if(options.localplugin){
         const parts = options.localplugin.split("/");
         const lastIndex = parts[parts.length - 1] === "" ? parts.length - 2 : parts.length - 1;
         const FolderName = parts[lastIndex];
-        fs.ensureDirSync(options.localplugin);
-        fs.ensureDirSync(options.projectbasepath + "/Plugins/" + FolderName)
-        fs.moveSync(options.localplugin, options.projectbasepath + "/Plugins/" + FolderName, { overwrite: true });
+        fse.ensureDirSync(options.projectbasepath + "/Plugins/" + FolderName)
+        const pluginexists = await fse.pathExists(options.projectbasepath + "/Plugins/" + FolderName)
+        if(pluginexists){
+            const localexists = await fse.pathExists(options.localplugin)
+            if(localexists){
+                fse.moveSync(options.localplugin, options.projectbasepath + "/Plugins/" + FolderName, { overwrite: true });
+            }
+        }
     }
 }
 
-function removepluginfolder(options){
+async function removepluginfolder(options){
     if(options.localplugin){
         const parts = options.localplugin.split("/");
         const lastIndex = parts[parts.length - 1] === "" ? parts.length - 2 : parts.length - 1;
         const FolderName = parts[lastIndex];
-        fs.moveSync(options.projectbasepath + "/Plugins/" + FolderName, options.localplugin, { overwrite: true });
+        fse.moveSync(options.projectbasepath + "/Plugins/" + FolderName, options.localplugin, { overwrite: true });
     }
 }
 

@@ -45,7 +45,7 @@ async function buildApplication(config){
         args.push('-clientconfig='+config.buildconfig); 
         args.push('-map=');
         args.push('-CookCultures=en');
-        args.push('-dlcname=' + config.dlcname);
+        args.push('-dlcname=' + config.pluginname);
         args.push('-DLCIncludeEngineContent');
         args.push('-basedonreleaseversion=' + config.releaseversion);  
         args.push('-stagebasereleasepaks');

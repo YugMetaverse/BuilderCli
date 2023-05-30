@@ -41,19 +41,19 @@ const buildAppCommand = new Command('build')
 
     let mergedData = { ...savedvalue, ...options };
     let keys = getKeys(options);
-    let configData = await config.confirmConfig(keys,  options);
+    let configData = await config.confirmConfig(keys,  mergedData);
 
-    if(options.saveconfig){ await savedconfig.saveSavedConfig(options.saveconfig, mergedData); } 
-    else if(buildmodule == "plugin"){ await savedconfig.saveSavedConfig("plugin_"+pluginname, mergedData); }
+    if(options.saveconfig){ await savedconfig.saveSavedConfig(options.saveconfig, configData); } 
+    else if(buildmodule == "plugin"){ await savedconfig.saveSavedConfig("plugin_"+pluginname, configData); }
     
-    if(buildmodule == "plugin"){ getpluginfolder(options); }
-    if(options.remote){ console.log("We Will Clone the repo"); }
-    if(options.branch){ await gitActions.SwitchBranch(options.branch); }
-    if(options.tag) { await gitActions.SwitchTag(options.tag); }
+    if(buildmodule == "plugin"){ await getpluginfolder(configData); }
+    if(configData.remote){ console.log("We Will Clone the repo"); }
+    if(configData.branch){ await gitActions.SwitchBranch(configData.branch); }
+    if(configData.tag) { await gitActions.SwitchTag(configData.tag); }
   
     await buildApplication(configData);
 
-    removepluginfolder(options);
+    await removepluginfolder(configData);
   });
 
 module.exports = buildAppCommand;

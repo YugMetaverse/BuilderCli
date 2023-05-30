@@ -10,6 +10,12 @@ function validatebuildcli(options)
       console.log("Error: Please specify plugin name");
       process.exit(1);
     }
+    if(options.localplugin && options.remoteplugin)
+    {
+      console.log("Error: Please specify only one of localplugin or remoteplugin");
+      process.exit(1);
+    }
+
 }
 
 function validateplugicli(options){
