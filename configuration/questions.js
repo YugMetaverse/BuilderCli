@@ -98,7 +98,15 @@ function getQuestions(buildKeys, existingdata){
             message: 'Enter the Server Target Name',
             default: (answers) => { return existingdata.hasOwnProperty("servertargetname") ? existingdata["servertargetname"] : answers.projectname + "Server"; },
             when: (answers) => { return buildKeys.includes('servertargetname'); } 
+        },
+        {
+            type: 'input',
+            name: 'stagingdirectory',
+            message: 'Enter the Staging Directory',
+            default: (answers) => { return existingdata.hasOwnProperty("stagingdirectory") ? existingdata["stagingdirectory"] : answers.projectbasepath+"Saved/StagedBuilds/"; },
+            when: (answers) => { return buildKeys.includes('stagingdirectory'); } 
         }
+        
     ];
     return questions;
 }

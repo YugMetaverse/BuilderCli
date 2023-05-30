@@ -26,7 +26,7 @@ const buildPluginCommand = new Command('buildplugin')
         ...savedvalue,
         ...options
     };
-    let configData = await config.confirmConfig(getKeys("plugin", options),  mergedData);
+    let configData = await config.confirmConfig(getKeys(options),  mergedData);
     savedconfig.saveSavedConfig("plugin_"+pluginname, configData);
     if(options.remote){ console.log("We Will Clone the repo"); }
     if(options.branch){ await gitActions.SwitchBranch(options.branch); }

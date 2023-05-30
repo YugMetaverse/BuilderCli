@@ -7,40 +7,55 @@ async function buildApplication(config){
     const command = buildlib.getUnrealUATPath(config.unrealbasepath);
     const args = [
     'BuildCookRun',
-    '-nop4',
+    '-nop4',  
     '-utf8output',
     '-nocompileeditor',
-    '-skipbuildeditor',
     '-cook',
     '-project="'+ config.projectbasepath +'/'+config.projectname+'.uproject"',
-    '-platform='+ config.platform,
-    '-SkipCookingEditorContent',
     '-stage',
-    '-archive',
-    '-package',
+    '-package', 
     '-build',
     '-pak',
     '-compressed',
-    '-archivedirectory="'+ config.archivedirectory +'"',
-    '-distribution',
-    '-manifests',
-    '-nodebuginfo',
     '-nocompile',
-    '-nocompileuat',
     ];
 
-    if(config.buildtype === "server"){
-        args.push('-server','-noclient', '-serverconfig='+config.buildconfig);
-    } else {
+
+    if(config.buildmodule === "release"){
+        args.push('-createreleaseversion='+config.releaseversion);
+        args.push('-stagingdirectory="'+config.stagingdirectory+'"');
+        args.push('-map=');
+        args.push('-CookCultures=en');
+        args.push('-unversionedcookedcontent');
+        args.push('-serverplatform='+ config.platform);
+        args.push('-server');
+        args.push('-noclient');
+        args.push('-serverconfig='+config.buildconfig);
         args.push('-clientconfig='+config.buildconfig);
     }
-
-    if(config.buildtype != "server"){
-        args.push('-installed','-target='+config.projectname);
-    } else {
-        args.push('-target='+config.servertargetname);
+    else
+    {
+        args.push('-archive');
+        args.push('-archivedirectory="'+ config.archivedirectory +'"');
+        args.push('-distribution');
+        args.push('-nodebuginfo');
+        args.push('-manifests');
+        args.push('-skipbuildeditor');
+        args.push('-platform='+ config.platform);
+        args.push('-SkipCookingEditorContent');
+        args.push('-nocompileuat');
+        if(config.buildtype === "server"){
+            args.push('-server');
+            args.push('-noclient'); 
+            args.push('-serverconfig='+config.buildconfig);   
+            args.push('-target='+config.servertargetname);
+        }
+         else {
+            args.push('-clientconfig='+config.buildconfig);
+            args.push('-installed','-target='+config.projectname);
+        }
     }
-    
+
     const builder = spawn(command, args);
 
     builder.stdout.on("data", data => {

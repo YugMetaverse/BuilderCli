@@ -6,8 +6,11 @@ let availableValues = {
     ],
     "buildtype": [
         "server",
-        "client",
+        "client"
+    ],
+    "buildmodule": [
         "release",
+        "app",
         "plugin"
     ]
 }
