@@ -22,6 +22,18 @@ function getKeys(commandName, commandlinevalues={}){
             "buildtype",
             "pluginname"
         ];   
+    }
+    else if(commandName == "server")
+    {
+        keys = [
+            "projectbasepath",
+            "platform",
+            "unrealbasepath",
+            "archivedirectory",
+            "buildconfig",
+            "buildtype",
+            "servertargetname"
+        ];   
     
     }
     if(commandlinevalues.gitswitch){

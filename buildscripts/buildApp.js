@@ -3,7 +3,8 @@ const { getConfig } = require("../configuration/config");
 const buildlib = require("../helpers/lib");
 
 async function buildApplication(config){
-    const command = config.unrealbasepath +'/Engine/Build/BatchFiles/RunUAT.command';
+
+    const command = buildlib.getUnrealUATPath(config.unrealbasepath);
     const args = [
     'BuildCookRun',
     '-nop4',
@@ -12,10 +13,8 @@ async function buildApplication(config){
     '-skipbuildeditor',
     '-cook',
     '-project="'+ config.projectbasepath +'/'+config.projectname+'.uproject"',
-    '-target='+config.projectname,
     '-platform='+ config.platform,
     '-SkipCookingEditorContent',
-    '-installed',
     '-stage',
     '-archive',
     '-package',
@@ -25,13 +24,23 @@ async function buildApplication(config){
     '-archivedirectory="'+ config.archivedirectory +'"',
     '-distribution',
     '-manifests',
-    '-clientconfig='+config.buildconfig,
     '-nodebuginfo',
     '-nocompile',
     '-nocompileuat',
     ];
 
+    if(config.buildtype === "server"){
+        args.push('-server','-noclient', '-serverconfig='+config.buildconfig);
+    } else {
+        args.push('-clientconfig='+config.buildconfig);
+    }
 
+    if(config.buildtype != "server"){
+        args.push('-installed','-target='+config.projectname);
+    } else {
+        args.push('-target='+config.servertargetname);
+    }
+    
     const builder = spawn(command, args);
 
     builder.stdout.on("data", data => {

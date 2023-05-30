@@ -12,6 +12,22 @@ function getUnrealExePath(basepath) {
     return unrealexepath;
 }
 
+function getUnrealUATPath(basepath)
+{
+    let UATPath;
+    if(process.platform === 'win32'){
+        UATPath = basepath +'/Engine/Build/BatchFiles/RunUAT.bat';
+    }
+    else if(process.platform === 'linux'){
+        UATPath = basepath +'/Engine/Build/BatchFiles/RunUAT.sh';
+    }
+    else if(process.platform === 'darwin'){
+        UATPath = basepath +'/Engine/Build/BatchFiles/RunUAT.command';
+    }
+    return UATPath;
+}
+
 module.exports = {
-    getUnrealExePath
+    getUnrealExePath,
+    getUnrealUATPath
 }

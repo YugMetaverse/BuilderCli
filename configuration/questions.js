@@ -91,6 +91,13 @@ function getQuestions(buildKeys, existingdata){
             when: (answers) => {
                 return buildKeys.includes('releaseversion');
             }
+        },
+        {
+            type: 'input',
+            name: 'servertargetname',
+            message: 'Enter the Server Target Name',
+            default: (answers) => { return existingdata.hasOwnProperty("servertargetname") ? existingdata["servertargetname"] : answers.projectname + "Server"; },
+            when: (answers) => { return buildKeys.includes('servertargetname'); } 
         }
     ];
     return questions;
