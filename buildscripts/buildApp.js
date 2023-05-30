@@ -13,7 +13,7 @@ async function buildApplication(config){
     '-cook',
     '-project="'+ config.projectbasepath +'/'+config.projectname+'.uproject"',
     '-stage',
-    '-package',  //
+    '-package',
     '-build',
     '-pak',
     '-compressed',
