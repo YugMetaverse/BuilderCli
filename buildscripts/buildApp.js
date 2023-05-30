@@ -13,7 +13,7 @@ async function buildApplication(config){
     '-cook',
     '-project="'+ config.projectbasepath +'/'+config.projectname+'.uproject"',
     '-stage',
-    '-package', 
+    '-package',  //
     '-build',
     '-pak',
     '-compressed',
@@ -32,6 +32,19 @@ async function buildApplication(config){
         args.push('-noclient');
         args.push('-serverconfig='+config.buildconfig);
         args.push('-clientconfig='+config.buildconfig);
+    }
+    else if(config.buildmodule == "plugin"){
+        args.push('-serverconfig='+config.buildconfig);
+        args.push('-clientconfig='+config.buildconfig); 
+        args.push('-serverplatform='+ config.platform);
+        args.push('-server');
+        args.push('-noclient');
+        args.push('-map=');
+        args.push('-CookCultures=en');
+        args.push('-dlcname=' + config.dlcname);
+        args.push('-DLCIncludeEngineContent');
+        args.push('-basedonreleaseversion=' + config.releaseversion);  
+        args.push('-stagebasereleasepaks');
     }
     else
     {

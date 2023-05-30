@@ -17,6 +17,11 @@ function getKeys(commandlinevalues={}){
         keys.push("releaseversion");
         keys.push("stagingdirectory");
     }
+    else if(commandModule === "plugin"){
+        keys.push("dlcname");
+        keys.push("releaseversion");
+
+    }
     else if(commandModule === "app"){
         keys.push("buildmodule");
         keys.push("archivedirectory");

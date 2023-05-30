@@ -103,8 +103,15 @@ function getQuestions(buildKeys, existingdata){
             type: 'input',
             name: 'stagingdirectory',
             message: 'Enter the Staging Directory',
-            default: (answers) => { return existingdata.hasOwnProperty("stagingdirectory") ? existingdata["stagingdirectory"] : answers.projectbasepath+"Saved/StagedBuilds/"; },
+            default: (answers) => { return existingdata.hasOwnProperty("stagingdirectory") ? existingdata["stagingdirectory"] : answers.projectbasepath+"/Saved/StagedBuilds/"; },
             when: (answers) => { return buildKeys.includes('stagingdirectory'); } 
+        },
+        {
+            type: 'input',
+            name: 'dlcname',
+            message: 'Enter the DLC Name',
+            default: (answers) => { return existingdata.hasOwnProperty("dlcname") ? existingdata["dlcname"] : "India_map"; },
+            when: (answers) => { return buildKeys.includes('dlcname'); } 
         }
         
     ];

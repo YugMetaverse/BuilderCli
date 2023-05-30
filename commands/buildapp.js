@@ -35,14 +35,14 @@ const buildAppCommand = new Command('build')
 
     let savedvalue = {};
     if(options.config){ savedvalue = await savedconfig.getSavedConfig(options.config); } 
-    else if(pluginname){ savedvalue = await savedconfig.getSavedConfig("plugin_"+pluginname); }
+    else if(buildmodule == "plugin"){ savedvalue = await savedconfig.getSavedConfig("plugin_"+pluginname); }
 
     let mergedData = { ...savedvalue, ...options };
     let keys = getKeys(options);
     let configData = await config.confirmConfig(keys,  options);
 
-    if(options.saveconfig){ await savedconfig.saveConfig(options.saveconfig, mergedData); } 
-    else if(pluginname){ await savedconfig.saveConfig("plugin_"+pluginname, mergedData); }
+    if(options.saveconfig){ await savedconfig.saveSavedConfig(options.saveconfig, mergedData); } 
+    else if(buildmodule == "plugin"){ await savedconfig.saveSavedConfig("plugin_"+pluginname, mergedData); }
     
     
     if(options.remote){ console.log("We Will Clone the repo"); }
