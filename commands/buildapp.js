@@ -17,6 +17,10 @@ const buildAppCommand = new Command('buildapp')
   .option('-g, --gitswitch ', 'Enable Git Actions like Branch and Tag Switch')
   .option('-b, --branch <char>', 'Branch to Build')
   .option('-t, --tag <char>', 'Tag of the Branch to Build')
+  .option('-l, --localplugin <localpath>', 'Path of the Plugin')
+  .option('-r, --remoteplugin <url> ', 'Remote git Repository for the Plugin')
+  .option('-b, --pluginbranch <char>', 'Branch to Build')
+  .option('-t, --plugintag <char>', 'Tag of the Branch to Build')
   .action(async(buildtype, buildmodule, options) => {
     options["buildtype"] = buildtype;
     options["buildmodule"] = buildmodule;
