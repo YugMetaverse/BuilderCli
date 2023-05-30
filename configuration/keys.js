@@ -32,6 +32,7 @@ function getKeys(commandName, commandlinevalues={}){
             "archivedirectory",
             "buildconfig",
             "buildtype",
+            "projectname",
             "servertargetname"
         ];   
     
