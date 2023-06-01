@@ -11,7 +11,7 @@ function getQuestions(buildKeys, existingdata){
             name: 'platform',
             choices: (answers) => {
                 if(process.platform === "win32"){
-                    return [ "Windows", "Android" ];
+                    return [ "win64", "Android" ];
                 }
                 else if(process.platform === "darwin"){
                     return [ "Mac", "iOS" ];
@@ -20,7 +20,7 @@ function getQuestions(buildKeys, existingdata){
                     return [ "Linux", "Android" ];
                 }
                 else{
-                    return ["Windows", "Android", "Mac", "iOS", "Linux"];
+                    return ["win64", "Android", "Mac", "iOS", "Linux"];
                 }
             },
             message: 'Select the Platform to Build',
