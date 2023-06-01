@@ -1,0 +1,12 @@
+FROM --platform=linux/x86_64 debian:bullseye-slim
+ARG PACKAGED_SERVER_PATH
+RUN apt-get update && \
+    apt-get install -y libglib2.0-0 libsecret-1-0 dbus && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+RUN dbus-uuidgen > /etc/machine-id
+RUN useradd -m nonroot
+USER nonroot
+COPY --chown=nonroot:nonroot ${PACKAGED_SERVER_PATH} /home/nonroot/server
+EXPOSE 7777/udp
+ENTRYPOINT ["/home/nonroot/server/YugGAS/Binaries/Linux/YugGASServer-Linux-Shipping", "YugGAS"]

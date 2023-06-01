@@ -3,7 +3,7 @@
 var figlet = require("figlet");
 const { Command } = require('commander');
 const buildAppCommand = require('./commands/buildapp');
-const buildPluginCommand = require('./commands/buildplugin');
+const testCommand = require('./commands/test');
 const buildWorker = require('./commands/buildworker');
 const chalk = require('chalk');
 
@@ -16,8 +16,8 @@ program
   .version('0.1.0');
 
 program.addCommand(buildAppCommand);
-program.addCommand(buildPluginCommand);
 program.addCommand(buildWorker);
+program.addCommand(testCommand);
 
 figlet("Yug Metaverse Builder", async function (err, asciidraw) {
   console.log(chalk.yellowBright(asciidraw) + '\n');
