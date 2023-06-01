@@ -18,24 +18,28 @@ const checkDocker = () => {
   try {
     const stdout = execSync(checkDockerCommand[platform], { stdio: 'pipe' }).toString();
     const isDockerRunning = stdout.includes('Up') || stdout.includes('Docker Desktop');
-    if (isDockerRunning) {
-      console.log('Docker is running.');
-    } else {
-      console.log('Docker is not running. Starting Docker...');
-      try {
-        const startOutput = execSync(startDockerCommand[platform], { stdio: 'pipe' });
-        console.log(startOutput.toString());
-        console.log('Docker started successfully.');
-      } catch (startError) {
-        console.error(`Error: ${startError.message}`);
-        process.exit(1);
+      if (isDockerRunning) {
+        console.log('Docker is running.');
       }
+  } catch (cError) {
+  
+    try {
+      
+        console.log('Docker is not running. Starting Docker...');
+        try {
+          const startOutput = execSync(startDockerCommand[platform], { stdio: 'pipe' });
+          console.log(startOutput.toString());
+          console.log('Docker started successfully.');
+        } catch (startError) {
+          console.error(`Error: ${startError.message}`);
+          process.exit(1);
+        }
+      
+    } catch (checkError) {
+      console.error(`Error: ${checkError.message}`);
+      process.exit(1);
     }
-  } catch (checkError) {
-    console.error(`Error: ${checkError.message}`);
-    process.exit(1);
   }
 };
 
-// module.exports(checkDocker);
-checkDocker();
+module.exports = checkDocker;

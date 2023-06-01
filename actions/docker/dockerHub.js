@@ -36,6 +36,15 @@ const tagImage = (imageName, repositoryName, tag) => {
     }
   };
 
+  const pullImage = (imageName) => {
+    try {
+        execSync(`docker pull ${imageName}`, { stdio: 'pipe' });
+        console.log(`Pulled image ${imageName} from Docker Hub`);
+      } catch (error) {
+        console.error(`Error: ${error.message}`);
+      }
+}
+
 const removeImageLocally = (imageName) => {
     try {
       execSync(`docker rmi ${imageName}`);
@@ -45,7 +54,14 @@ const removeImageLocally = (imageName) => {
     }
 };
 
-loginToDockerHub();
-// tagImage('local_image_name', 'docker_hub_username/repository_name', 'tag');
-pushImage('utkashx/yugserver');
-removeImageLocally('utkashx/yugserver');
+// loginToDockerHub();
+// // tagImage('local_image_name', 'docker_hub_username/repository_name', 'tag');
+// pushImage('utkashx/yugserver');
+// removeImageLocally('utkashx/yugserver');
+
+module.exports = {
+    loginToDockerHub,
+    pushImage,
+    pullImage,
+    removeImageLocally
+}
