@@ -1,6 +1,7 @@
 const { spawn } = require("child_process");
 const { getConfig } = require("../configuration/config");
 const buildlib = require("../helpers/lib");
+const path = require('path');
 
 async function buildApplication(config){
 
@@ -11,7 +12,7 @@ async function buildApplication(config){
     '-utf8output',
     '-nocompileeditor',
     '-cook',
-    '-project="'+ config.projectbasepath +'/'+config.projectname+'.uproject"',
+    '-project="'+ path.join(config.projectbasepath,config.projectname+'.uproject') +'"',
     '-stage',
     '-package',
     '-build',
@@ -82,22 +83,26 @@ async function buildApplication(config){
         }
     }
 
-    const builder = spawn(command, args);
+    return new Promise((resolve, reject) => {
+        const builder = spawn(command, args);
 
-    builder.stdout.on("data", data => {
-        console.log(`stdout: ${data}`);
-    });
+        builder.stdout.on("data", data => {
+            console.log(`stdout: ${data}`);
+        });
 
-    builder.stderr.on("data", data => {
-        console.log(`stderr: ${data}`);
-    });
+        builder.stderr.on("data", data => {
+            console.log(`stderr: ${data}`);
+        });
 
-    builder.on('error', (error) => {
-        console.log(`error: ${error.message}`);
-    });
+        builder.on('error', (error) => {
+            console.log(`error: ${error.message}`);
+            reject(error);
+        });
 
-    builder.on("close", code => {
-        console.log(`child process exited with code ${code}`);
+        builder.on("close", code => {
+            console.log(`child process exited with code ${code}`);
+            resolve();
+        });
     });
 }
 
