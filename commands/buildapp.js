@@ -54,13 +54,15 @@ const buildAppCommand = new Command('build')
 
     await buildApplication(configData);
 
-    await removepluginfolder(configData);
+    if( buildmodule == "plugin" ) {
+      await removepluginfolder(configData);
+    }
 
     if (configData.upload) {
       if (configData.buildmodule == 'plugin') {
         uploadPlugin(configData)
       }
-      else if (configData.buildmodule == ('app')) {
+      else if (configData.buildmodule == 'app') {
         uploadApp(configData)
       }
     }
