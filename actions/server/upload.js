@@ -10,7 +10,10 @@ const API_URL = 'https://webapi.yugverse.com';
 
 //"C:\Users\utksh\OneDrive\Desktop\india_map\Saved\StagedBuilds\Windows\YugGAS\Plugins\india_map\Content\Paks\Windows\india_mapYugGAS-Windows.pak"
 const uploadPlugin = async (options) => {
-    const buildPackPath = path.join(options.stagingdirectory, (options.platform === 'win32') ? 'Windows' : options.platform , options.pluginname, `${options.platform}.pak`);
+    const path = require('path');
+    let appName = "YugGAS"
+    let platformName = (options.platform === 'win32') ? 'Windows' : options.platform
+    const buildPackPath = path.join(options.stagingdirectory, platformName, appName, 'Plugins', options.pluginname, 'Content', 'Paks', platformName, `${options.pluginname}${appName}-${platformName}.pak`);
     const buildPack = fs.readFileSync(buildPackPath);
     const formData = new FormData();
 
@@ -48,16 +51,13 @@ const uploadPlugin = async (options) => {
 
 
 const uploadApp = async (options) => {
-
-    try{
-
+    try {
         const zipurl = await zipAppFolder(options);
-    } catch(error){
+    } catch (error) {
         console.log("Error Zipping File");
     }
     const buildPack = fs.readFileSync(zipurl);
     const formData = new FormData();
-
     formData.append('file', buildPack, { filename: 'build.zip' });
     const requestOptions = {
         hostname: API_URL,

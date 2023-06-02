@@ -10,6 +10,11 @@ function validatebuildcli(options)
       console.log("Error: Please specify plugin name");
       process.exit(1);
     }
+    if(options.buildmodule == "plugin" && !options.pluginid)
+    {
+      console.log("Error: Please specify plugin Id");
+      process.exit(1);
+    }
     if(options.localplugin && options.remoteplugin)
     {
       console.log("Error: Please specify only one of localplugin or remoteplugin");

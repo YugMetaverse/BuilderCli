@@ -17,6 +17,7 @@ const buildAppCommand = new Command('build')
   .addArgument(new Argument('<buildtype>', 'Type to Build:').choices(availableValues.buildtype))
   .addArgument(new Argument('<buildmodule>', 'Build Module:').choices(availableValues.buildmodule))
   .addArgument(new Argument('[pluginname]', 'Name of the Plugin to be Built (If PLugin is being Built)'))
+  .addArgument(new Argument('[plugiid]', 'Id of the Plugin to be Built (If PLugin is being Built)'))
   .addOption(new Option('-b, --buildconfig <buildconfig>', 'Build Configuration:').choices(availableValues.buildconfig))
   .option('-r, --remote ', 'Remote Build by Downloading the Repository from Scratch')
   .option('-g, --gitswitch ', 'Enable Git Actions like Branch and Tag Switch')
@@ -29,10 +30,11 @@ const buildAppCommand = new Command('build')
   .option('-b, --pluginbranch <char>', 'Branch to Build')
   .option('-t, --plugintag <char>', 'Tag of the Branch to Build')
   .option('-u, --upload', 'upload the build and packages')
-  .action(async (buildtype, buildmodule, pluginname, options) => {
+  .action(async (buildtype, buildmodule, pluginname, plugiid, options) => {
     options["buildtype"] = buildtype;
     options["buildmodule"] = buildmodule;
     if (pluginname) { options["pluginname"] = pluginname; }
+    if (plugiid) { options["plugiid"] = plugiid; }
 
     validatebuildcli(options);
 
@@ -54,7 +56,7 @@ const buildAppCommand = new Command('build')
 
     await buildApplication(configData);
 
-    if( buildmodule == "plugin" ) {
+    if (buildmodule == "plugin") {
       await removepluginfolder(configData);
     }
 
