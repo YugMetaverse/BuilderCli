@@ -3,10 +3,11 @@ const { buildApplication } = require('../buildscripts/buildApp');
 const gitActions = require('../actions/git/gitActions');
 const config = require('../configuration/config');
 const getKeys = require('../configuration/keys');
-const availableValues  = require('../configuration/availablevalues');
+const availableValues = require('../configuration/availablevalues');
 const { validatebuildcli } = require('../helpers/validation');
 const savedconfig = require('../configuration/savedconfig');
 const { getpluginfolder, removepluginfolder } = require('../actions/file/filemanager');
+const { uploadApp, uploadPlugin } = require('../actions/server/upload');
 
 
 
@@ -27,32 +28,43 @@ const buildAppCommand = new Command('build')
   .option('-r, --remoteplugin <url> ', 'Remote git Repository for the Plugin')
   .option('-b, --pluginbranch <char>', 'Branch to Build')
   .option('-t, --plugintag <char>', 'Tag of the Branch to Build')
-  .action(async(buildtype, buildmodule, pluginname, options) => {
+  .option('-u, --upload', 'upload the build and packages')
+  .action(async (buildtype, buildmodule, pluginname, options) => {
     options["buildtype"] = buildtype;
     options["buildmodule"] = buildmodule;
-    if(pluginname){ options["pluginname"] = pluginname; }
+    if (pluginname) { options["pluginname"] = pluginname; }
 
     validatebuildcli(options);
 
     let savedvalue = {};
-    if(options.config){ savedvalue = await savedconfig.getSavedConfig(options.config); } 
-    else if(buildmodule == "plugin"){ savedvalue = await savedconfig.getSavedConfig("plugin_"+pluginname); }
+    if (options.config) { savedvalue = await savedconfig.getSavedConfig(options.config); }
+    else if (buildmodule == "plugin") { savedvalue = await savedconfig.getSavedConfig("plugin_" + pluginname); }
 
     let mergedData = { ...savedvalue, ...options };
     let keys = getKeys(options);
-    let configData = await config.confirmConfig(keys,  mergedData);
+    let configData = await config.confirmConfig(keys, mergedData);
 
-    if(options.saveconfig){ await savedconfig.saveSavedConfig(options.saveconfig, configData); } 
-    else if(buildmodule == "plugin"){ await savedconfig.saveSavedConfig("plugin_"+pluginname, configData); }
-    
-    if(buildmodule == "plugin"){ await getpluginfolder(configData); }
-    if(configData.remote){ console.log("We Will Clone the repo"); }
-    if(configData.branch){ await gitActions.SwitchBranch(configData.branch); }
-    if(configData.tag) { await gitActions.SwitchTag(configData.tag); }
-  
+    if (options.saveconfig) { await savedconfig.saveSavedConfig(options.saveconfig, configData); }
+    else if (buildmodule == "plugin") { await savedconfig.saveSavedConfig("plugin_" + pluginname, configData); }
+
+    if (buildmodule == "plugin") { await getpluginfolder(configData); }
+    if (configData.remote) { console.log("We Will Clone the repo"); }
+    if (configData.branch) { await gitActions.SwitchBranch(configData.branch); }
+    if (configData.tag) { await gitActions.SwitchTag(configData.tag); }
+
     await buildApplication(configData);
 
     await removepluginfolder(configData);
+
+    if (configData.upload) {
+      if (configData.buildmodule == 'plugin') {
+        uploadPlugin(configData)
+      }
+      else if (configData.buildmodule == ('app')) {
+        uploadApp(configData)
+      }
+    }
+
   });
 
 module.exports = buildAppCommand;

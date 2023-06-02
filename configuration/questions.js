@@ -1,6 +1,6 @@
-const availableValues = require ('../configuration/availablevalues');
+const availableValues = require('../configuration/availablevalues');
 
-function getQuestions(buildKeys, existingdata){
+function getQuestions(buildKeys, existingdata) {
     function getOptionDefault(propName) {
         return existingdata.hasOwnProperty(propName) ? existingdata[propName] : availableValues[propName][0];
     }
@@ -10,16 +10,16 @@ function getQuestions(buildKeys, existingdata){
             type: 'list',
             name: 'platform',
             choices: (answers) => {
-                if(process.platform === "win32"){
-                    return [ "win64", "Android" ];
+                if (process.platform === "win32") {
+                    return ["win64", "Android"];
                 }
-                else if(process.platform === "darwin"){
-                    return [ "Mac", "iOS" ];
+                else if (process.platform === "darwin") {
+                    return ["Mac", "iOS"];
                 }
-                else if(process.platform === "linux"){
-                    return [ "Linux", "Android" ];
+                else if (process.platform === "linux") {
+                    return ["Linux", "Android"];
                 }
-                else{
+                else {
                     return ["win64", "Android", "Mac", "iOS", "Linux"];
                 }
             },
@@ -39,24 +39,24 @@ function getQuestions(buildKeys, existingdata){
             type: 'input',
             name: 'unrealbasepath',
             message: 'Enter the Unreal Installation Path',
-            default: (answers) => { 
+            default: (answers) => {
                 if (existingdata.hasOwnProperty('unrealbasepath')) {
                     return existingdata.unrealbasepath;
                 }
-                else{
-                    if(process.platform === "darwin"){
+                else {
+                    if (process.platform === "darwin") {
                         return "/Users/Shared/Epic Games/UE_5.1";
                     }
-                    else if(process.platform === "win32"){ 
+                    else if (process.platform === "win32") {
                         return "C:/Program Files/Epic Games/UE_5.1";
                     }
-                    else if(process.platform === "linux"){
+                    else if (process.platform === "linux") {
                         return "/opt/UnrealEngine/5.1";
                     }
                     return "C:/Program Files/Epic Games/UE_5.1";
-                } 
+                }
             },
-            when:  answers => { return buildKeys.includes('unrealbasepath') }
+            when: answers => { return buildKeys.includes('unrealbasepath') }
         },
         //projectbasepath
         {
@@ -72,7 +72,7 @@ function getQuestions(buildKeys, existingdata){
             name: 'archivedirectory',
             message: 'Enter the Path to Archive the Project',
             default: (answers) => { return existingdata.hasOwnProperty("archivedirectory") ? existingdata["archivedirectory"] : answers.projectbasepath + "/Packaged"; },
-            when:  (answers) => { return buildKeys.includes('archivedirectory'); }
+            when: (answers) => { return buildKeys.includes('archivedirectory'); }
         },
         //projectname
         {
@@ -80,7 +80,7 @@ function getQuestions(buildKeys, existingdata){
             name: 'projectname',
             message: 'Enter the Project Name',
             default: (answers) => { return existingdata.hasOwnProperty("projectname") ? existingdata["projectname"] : "YugGAS"; },
-            when:  (answers) => { return buildKeys.includes('projectname'); }
+            when: (answers) => { return buildKeys.includes('projectname'); }
         },
         //release 
         {
@@ -97,35 +97,42 @@ function getQuestions(buildKeys, existingdata){
             name: 'servertargetname',
             message: 'Enter the Server Target Name',
             default: (answers) => { return existingdata.hasOwnProperty("servertargetname") ? existingdata["servertargetname"] : answers.projectname + "Server"; },
-            when: (answers) => { return buildKeys.includes('servertargetname'); } 
+            when: (answers) => { return buildKeys.includes('servertargetname'); }
         },
         {
             type: 'input',
             name: 'stagingdirectory',
             message: 'Enter the Staging Directory',
-            default: (answers) => { return existingdata.hasOwnProperty("stagingdirectory") ? existingdata["stagingdirectory"] : answers.projectbasepath+"/Saved/StagedBuilds/"; },
-            when: (answers) => { return buildKeys.includes('stagingdirectory'); } 
+            default: (answers) => { return existingdata.hasOwnProperty("stagingdirectory") ? existingdata["stagingdirectory"] : answers.projectbasepath + "/Saved/StagedBuilds/"; },
+            when: (answers) => { return buildKeys.includes('stagingdirectory'); }
         },
         {
             type: 'input',
             name: 'pluginname',
             message: 'Enter the Plugin Name',
             default: (answers) => { return existingdata.hasOwnProperty("pluginname") ? existingdata["pluginname"] : "India_map"; },
-            when: (answers) => { return buildKeys.includes('pluginname'); } 
+            when: (answers) => { return buildKeys.includes('pluginname'); }
         },
         {
             type: 'input',
             name: 'localplugin',
             message: 'Enter the Local Plugin Path',
             default: (answers) => { return existingdata.hasOwnProperty("localplugin") ? existingdata["localplugin"] : "/Users/utkarshshukla/indialand/India_map"; },
-            when: (answers) => { return buildKeys.includes('localplugin'); } 
+            when: (answers) => { return buildKeys.includes('localplugin'); }
+        },
+        {
+            type: 'confirm',
+            name: 'upload',
+            message: 'Do you want to upload after Build',
+            default: (answers) => { return existingdata.hasOwnProperty("upload") ? existingdata["upload"] : true },
+            when: (answers) => { return buildKeys.includes('upload'); }
         }
-        
+
     ];
     return questions;
 }
 
-function getConfirmQuestion(){
+function getConfirmQuestion() {
     let questions = [
         {
             type: 'confirm',
@@ -137,6 +144,6 @@ function getConfirmQuestion(){
 }
 
 module.exports = {
-    getQuestions,   
+    getQuestions,
     getConfirmQuestion
 }

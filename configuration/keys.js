@@ -17,10 +17,12 @@ function getKeys(commandlinevalues={}){
         keys.push("buildmodule");
         keys.push("releaseversion");
         keys.push("stagingdirectory");
+
     }
     else if(commandModule === "plugin"){
         keys.push("pluginname");
         keys.push("releaseversion");
+        keys.push("upload");
         if(commandlinevalues.localplugin || !commandlinevalues.remoteplugin){
             keys.push("localplugin");
         } else if(commandlinevalues.remoteplugin){
@@ -30,6 +32,7 @@ function getKeys(commandlinevalues={}){
     else if(commandModule === "app"){
         keys.push("buildmodule");
         keys.push("archivedirectory");
+        keys.push("upload");
         if(commandType === "client"){
             
         }
