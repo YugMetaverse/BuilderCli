@@ -3,7 +3,7 @@ const https = require('https');
 const FormData = require('form-data');
 
 const uploadPlugin = async (options) => {
-    const buildPackPath = `${options.stagingdirectory}/${options.platform}/${options.pluginname}.pak`;
+    const buildPackPath = `${options.stagingdirectory}/${options.pluginname}/${options.platform}.pak`;
     const buildPack = fs.readFileSync(buildPackPath);
     const formData = new FormData();
 
