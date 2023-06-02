@@ -16,7 +16,7 @@ const uploadPlugin = async (options) => {
     const buildPackPath = path.join(options.stagingdirectory, platformName, appName, 'Plugins', options.pluginname, 'Content', 'Paks', platformName, `${options.pluginname}${appName}-${platformName}.pak`);
     const buildPack = fs.readFileSync(buildPackPath);
     const formData = new FormData();
-
+    form.append('plugin', JSON.stringify({ pluginId: options.pluginid }));
     formData.append('file', buildPack, { filename: 'plugin.pak' });
     const requestOptions = {
         hostname: API_URL,
