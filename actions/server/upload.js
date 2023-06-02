@@ -2,6 +2,10 @@ const fs = require('fs');
 const https = require('https');
 const FormData = require('form-data');
 
+const API_URL = 'https://webapi.yugverse.com';
+//TODO:move url to config
+
+
 const uploadPlugin = async (options) => {
     const buildPackPath = `${options.stagingdirectory}/${options.pluginname}/${options.platform}.pak`;
     const buildPack = fs.readFileSync(buildPackPath);
@@ -9,7 +13,7 @@ const uploadPlugin = async (options) => {
 
     formData.append('file', buildPack, { filename: 'plugin.pak' });
     const requestOptions = {
-        hostname: 'https://webapi.yugverse.com',
+        hostname: API_URL,
         path: '/upload',
         method: 'POST',
         headers: formData.getHeaders(),
@@ -47,7 +51,7 @@ const uploadApp = async (options) => {
 
     formData.append('file', buildPack, { filename: 'build.pak' });
     const requestOptions = {
-        hostname: 'https://webapi.yugverse.com',
+        hostname: API_URL,
         path: '/upload',
         method: 'POST',
         headers: formData.getHeaders(),
