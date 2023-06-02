@@ -4,6 +4,7 @@ const path = require('path');
 
 async function zipAppFolder(options){
     const buildPackPath =getappBuildFolderPath(options);
+    console.log(buildPackPath);
     let zipFile = path.join(options.archivedirectory, `${options.platform}.zip`);
     return new Promise((resolve, reject) => {
         let output = fs.createWriteStream(zipFile);
