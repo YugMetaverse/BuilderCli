@@ -18,7 +18,7 @@ const uploadPlugin = async (options) => {
     formData.append('file', buildPack, { filename: 'plugin.pak' });
     const requestOptions = {
         hostname: API_URL,
-        path: '/files/upload',
+        path: '/items/uploadplugin',
         method: 'POST',
         headers: formData.getHeaders(),
         ...options,
