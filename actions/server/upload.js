@@ -1,5 +1,5 @@
 const fs = require('fs');
-const https = require('https');
+const https = require('http');
 const FormData = require('form-data');
 const { zipAppFolder } = require('../zip/zip');
 
@@ -50,10 +50,11 @@ const uploadApp = async (options) => {
         const zipurl = await zipAppFolder(options);
         const buildPack = fs.readFileSync(zipurl);
         const formData = new FormData();
+        formData.append("application",JSON.stringify(options))
         formData.append('file', buildPack, { filename: 'build.zip' });
         const requestOptions = {
             hostname: API_URL,
-            path: '/files/upload',
+            path: '/application/old',
             method: 'POST',
             headers: formData.getHeaders(),
             ...options,
@@ -79,7 +80,7 @@ const uploadApp = async (options) => {
 
         return response;
     } catch (error) {
-        console.log("Error Zipping File");
+        console.log("Error in Updating File",error);
     }
 };
 
