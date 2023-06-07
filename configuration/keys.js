@@ -23,6 +23,7 @@ function getKeys(commandlinevalues={}){
         keys.push("pluginname");
         keys.push("releaseversion");
         keys.push("upload");
+        keys.push("stagingdirectory");
         if(commandlinevalues.localplugin || !commandlinevalues.remoteplugin){
             keys.push("localplugin");
         } else if(commandlinevalues.remoteplugin){

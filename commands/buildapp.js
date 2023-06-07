@@ -30,11 +30,11 @@ const buildAppCommand = new Command('build')
   .option('-b, --pluginbranch <char>', 'Branch to Build')
   .option('-t, --plugintag <char>', 'Tag of the Branch to Build')
   .option('-u, --upload', 'upload the build and packages')
-  .action(async (buildtype, buildmodule, pluginname, plugiid, options) => {
+  .action(async (buildtype, buildmodule, pluginname, pluginid, options) => {
     options["buildtype"] = buildtype;
     options["buildmodule"] = buildmodule;
     if (pluginname) { options["pluginname"] = pluginname; }
-    if (plugiid) { options["plugiid"] = plugiid; }
+    if (pluginid) { options["pluginid"] = pluginid; }
 
     validatebuildcli(options);
 
@@ -57,15 +57,15 @@ const buildAppCommand = new Command('build')
     // await buildApplication(configData);
 
     if (buildmodule == "plugin") {
-      await removepluginfolder(configData);
+      // await removepluginfolder(configData);
     }
 
     if (configData.upload) {
       if (configData.buildmodule == 'plugin') {
-        uploadPlugin(configData)
+       await uploadPlugin(configData)
       }
       else if (configData.buildmodule == 'app') {
-        uploadApp(configData)
+       await uploadApp(configData)
       }
     }
 
