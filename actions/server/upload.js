@@ -76,6 +76,7 @@ const uploadApp = async (options) => {
                 console.error(`Error with request: ${error}`);
                 reject(error);
             });
+    
             formData.pipe(request);
         });
 

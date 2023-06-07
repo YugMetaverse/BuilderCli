@@ -27,7 +27,13 @@ function getUnrealUATPath(basepath)
     return UATPath;
 }
 
+function convertUnrealPlatformNametoFolderPlatformName(platformName)
+{
+    return (platformName === 'win64') ? 'Windows' : platformName;
+}
+
 module.exports = {
     getUnrealExePath,
-    getUnrealUATPath
+    getUnrealUATPath,
+    convertUnrealPlatformNametoFolderPlatformName
 }
