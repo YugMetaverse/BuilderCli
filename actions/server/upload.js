@@ -62,19 +62,13 @@ const uploadApp = async (options) => {
 
         const response = await new Promise((resolve, reject) => {
             const request = https.request(requestOptions, (response) => {
-                let data = '';
-                response.on('data', (chunk) => {
-                    data += chunk;
-                });
-                response.on('end', () => {
-                    console.log('Request complete.',data);
-                    resolve(data);
-                });
+                resolve(response);
             });
             request.on('error', (error) => {
                 console.error(`Error with request: ${error}`);
                 reject(error);
             });
+    
             formData.pipe(request);
         });
 

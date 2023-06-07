@@ -54,7 +54,7 @@ const buildAppCommand = new Command('build')
     if (configData.branch) { await gitActions.SwitchBranch(configData.branch); }
     if (configData.tag) { await gitActions.SwitchTag(configData.tag); }
 
-    // await buildApplication(configData);
+    //await buildApplication(configData);
 
     if (buildmodule == "plugin") {
       await removepluginfolder(configData);
@@ -62,10 +62,10 @@ const buildAppCommand = new Command('build')
 
     if (configData.upload) {
       if (configData.buildmodule == 'plugin') {
-        uploadPlugin(configData)
+        await uploadPlugin(configData)
       }
       else if (configData.buildmodule == 'app') {
-        uploadApp(configData)
+        await uploadApp(configData)
       }
     }
 
