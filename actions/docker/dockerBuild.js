@@ -1,6 +1,6 @@
 const { execSync } = require('child_process');
 
-function dockerBuild() {
+function dockerBuild(options) {
   let dockerRootPath = "../../assets/dockers/";
   let dockerPath = dockerRootPath + 'Dockerfile.server';
   const dockerBuildCommand = 'docker build --build-arg PACKAGED_SERVER_PATH=./Packaged/LinuxServer -t utkashx/yugserver --f '+dockerPath+' '+dockerRootPath;
