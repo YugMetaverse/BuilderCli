@@ -171,7 +171,7 @@ async function updatePluginUploadDataOnServer(options) {
     try {
         const load = loading("Updating Plugin on Server".blue).start();
         const url = `${API_URL}/items/uploadplugin`;
-        const data = JSON.stringify(options);
+        const data = JSON.stringify({plugin:options});
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -182,6 +182,7 @@ async function updatePluginUploadDataOnServer(options) {
             });
             const jsonResponse = await response.json();
             load.stop();
+            console.log(jsonResponse)
             return jsonResponse;
         } catch (error) {
             console.error(error);
