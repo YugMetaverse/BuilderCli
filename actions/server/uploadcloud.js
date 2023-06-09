@@ -3,6 +3,7 @@ const url = require('url');
 const fs = require('fs');
 const cliProgress = require('cli-progress');
 const color = require('colors-cli/toxic');
+const colors = require('ansi-colors');
 const loading = require('loading-cli');
 
 const SIGN_APIURL = 'https://webapi.yugverse.com/files/signed-url';
@@ -82,7 +83,12 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
             let uploadedBytes = 0;
 
             // Create a progress bar
-            const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+            const progressBar = new cliProgress.SingleBar({
+                format: 'Upload Progress |' + colors.yellowBright('{bar}') + '| {percentage}% | {value}/{total}',
+                barCompleteChar: '\u2588',
+                barIncompleteChar: '-',
+                hideCursor: true
+            });
             progressBar.start(fileSize, 0);
 
             readableStream.on('data', (chunk) => {
@@ -118,7 +124,7 @@ async function updateAppUploadDataOnServer(options){
                 hostname: API_URL,
                 path: '/application/old',
                 method: 'POST',
-                headers: formData.getHeaders(),
+                // headers: formData.getHeaders(),
                 ...options,
             });
 
