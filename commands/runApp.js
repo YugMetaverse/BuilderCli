@@ -1,7 +1,8 @@
 const { Command, Argument, Option } = require('commander');
-const checkDocker = require('../actions/docker/ensuredockerrunning');
+const checkDocker = require('../actions/docker/ensureDockerRunning');
 const {pullImage} = require('../actions/docker/dockerHub');
 const {runDocker, stopDocker} = require('../actions/docker/dockerRun');
+
 
 const runAppCommand = new Command('run')
   .description('Run Yug Applications')
