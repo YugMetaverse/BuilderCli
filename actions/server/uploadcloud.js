@@ -5,6 +5,7 @@ const cliProgress = require('cli-progress');
 const color = require('colors-cli/toxic');
 const colors = require('ansi-colors');
 const loading = require('loading-cli');
+const path = require('path');
 
 const SIGN_APIURL = 'https://webapi.yugverse.com/files/signed-url';
 const API_URL = 'https://webapi.yugverse.com';
