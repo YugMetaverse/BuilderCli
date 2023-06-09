@@ -55,6 +55,20 @@ const uploadApp = async (options) => {
 async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
     return new Promise(async (resolve, reject) => {
         try {
+            // Using a stream to read the file
+            const readableStream = fs.createReadStream(localfilepath);
+            const fileSize = fs.statSync(localfilepath).size;
+            let uploadedBytes = 0;
+            // Create a progress bar
+            const progressBar = new cliProgress.SingleBar({
+                format: 'Upload Progress |' + colors.yellowBright('{bar}') + '| {percentage}% | {value}/{total}',
+                barCompleteChar: '\u2588',
+                barIncompleteChar: '-',
+                hideCursor: true
+            });
+            progressBar.start(fileSize, 0);
+
+
             const requestOptions = {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/octet-stream' },
@@ -63,7 +77,6 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
             const request = https.request(cloudstoragesignedurl, requestOptions, (response) => {
                 if (response.statusCode === 200) {
                     progressBar.stop();
-
                     console.log('\nFile uploaded successfully');
                     resolve()
                 } else {
@@ -77,19 +90,7 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
                 reject(error)
             });
 
-            // Using a stream to read the file
-            const readableStream = fs.createReadStream(localfilepath);
-            const fileSize = fs.statSync(localfilepath).size;
-            let uploadedBytes = 0;
-
-            // Create a progress bar
-            const progressBar = new cliProgress.SingleBar({
-                format: 'Upload Progress |' + colors.yellowBright('{bar}') + '| {percentage}% | {value}/{total}',
-                barCompleteChar: '\u2588',
-                barIncompleteChar: '-',
-                hideCursor: true
-            });
-            progressBar.start(fileSize, 0);
+            
 
             readableStream.on('data', (chunk) => {
                 request.write(chunk);
