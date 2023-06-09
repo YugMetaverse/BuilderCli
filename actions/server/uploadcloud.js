@@ -7,7 +7,7 @@ const colors = require('ansi-colors');
 const loading = require('loading-cli');
 
 const SIGN_APIURL = 'https://webapi.yugverse.com/files/signed-url';
-const API_URL = 'webapi.yugverse.com';
+const API_URL = 'https://webapi.yugverse.com';
 async function getSignedUrl(fileextension) {
     return new Promise((resolve, reject) => {
         const requestUrl = new URL(SIGN_APIURL);
@@ -114,82 +114,83 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
 
 }
 
-async function updateAppUploadDataOnServer(options){
+async function updateAppUploadDataOnServer(options) {
     try {
-
-        const load = loading("Updating Data on Server".blue).start();
-
-        const resp = await new Promise((resolve, reject) => {
-
-            const request = https.request({
-                hostname: API_URL,
-                path: '/application/old',
+        const load = loading("Updating App on Server".blue).start();
+        const url = `${API_URL}/application/old`;
+        const data = JSON.stringify(options);
+        try {
+            const response = await fetch(url, {
                 method: 'POST',
-                // headers: formData.getHeaders(),
-                ...options,
+                body: data,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
-
-            request.on('response', (response) => {
-                let responseData = '';
-                response.on('data', (chunk) => {
-                    responseData += chunk;
-                });
-                response.on('end', () => {
-                    load.stop();
-                    console.log('\n \n Request complete. with response' + responseData + '\n \n');
-                    resolve(responseData);
-                });
-            });
-
-            request.on('error', (error) => {
-                console.error(`Error with request: ${error}`);
-                reject(error);
-            });
-
-            request.on('close', () => {
-                console.log('Successfully updated on Server');
-                resolve();
-            });
-        });
-
-        return resp;
+            const jsonResponse = await response.json();
+            load.stop();
+            return jsonResponse;
+        } catch (error) {
+            console.error(error);
+        }
     } catch (error) {
         console.log("Error in Updating File", error);
     }
 }
 
-async function updatePluginUploadDataOnServer(options){
-    const response = await new Promise((resolve, reject) => {
-        const request = https.request({
-            hostname: API_URL,
-            path: '/items/uploadplugin',
-            method: 'POST',
-            headers: formData.getHeaders(),
-            ...options,
-        });
-        request.on('response', (response) => {
-            let responseData = '';
-            response.on('data', (chunk) => {
-                responseData += chunk;
+async function updatePluginUploadDataOnServer(options) {
+    try {
+        const load = loading("Updating Plugin on Server".blue).start();
+        const url = `${API_URL}/items/uploadplugin`;
+        const data = JSON.stringify(options);
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
-            response.on('end', () => {
-                console.log('\nRequest complete.');
-                resolve(responseData);
-            });
-        });
+            const jsonResponse = await response.json();
+            load.stop();
+            return jsonResponse;
+        } catch (error) {
+            console.error(error);
+        }
+    } catch (error) {
+        console.log("Error in Updating File", error);
+    }
+    // const response = await new Promise((resolve, reject) => {
+    //     const request = https.request({
+    //         hostname: API_URL,
+    //         path: '/items/uploadplugin',
+    //         method: 'POST',
+    //         headers: formData.getHeaders(),
+    //         ...options,
+    //     });
+    //     request.on('response', (response) => {
+    //         let responseData = '';
+    //         response.on('data', (chunk) => {
+    //             responseData += chunk;
+    //         });
+    //         response.on('end', () => {
+    //             console.log('\nRequest complete.');
+    //             resolve(responseData);
+    //         });
+    //     });
 
-        request.on('error', (error) => {
-            console.error(`Error with request: ${error}`);
-            reject(error);
-        });
+    //     request.on('error', (error) => {
+    //         console.error(`Error with request: ${error}`);
+    //         reject(error);
+    //     });
 
-        request.on('close', () => {
-            console.log('File upload completed');
-            resolve();
-        });
-    });
+    //     request.on('close', () => {
+    //         console.log('File upload completed');
+    //         resolve();
+    //     });
+    // });
 
-    return response;
+    // return response;
 }
 
 
