@@ -116,7 +116,13 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
 
 async function updateAppUploadDataOnServer(options) {
     try {
-        const load = loading("Updating App on Server".blue).start();
+        const load = loading({
+            "text":"Updating App On Server",
+            "color":"yellow",
+            "interval":100,
+            "stream": process.stdout,
+            "frames":["◰", "◳", "◲", "◱"]
+          }).start();
         const url = `${API_URL}/application/old`;
         const data = JSON.stringify(options);
         try {
