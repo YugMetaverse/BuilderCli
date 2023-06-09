@@ -27,9 +27,17 @@ function getUnrealUATPath(basepath)
     return UATPath;
 }
 
-function convertUnrealPlatformNametoFolderPlatformName(platformName)
+function convertUnrealPlatformNametoFolderPlatformName(options)
 {
-    return (platformName === 'win64') ? 'Windows' : platformName;
+    if(options.platform == 'win64'){
+        return 'Windows';
+    }
+    else if(options.platform == 'Linux' && options.buildtype == 'server'){
+        return 'LinuxServer';
+    }
+    else{
+        return options.platform;
+    }    
 }
 
 module.exports = {

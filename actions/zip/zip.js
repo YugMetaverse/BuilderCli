@@ -36,7 +36,7 @@ async function zipAppFolder(options){
     });
     progressBar.start(totalSize, 0);
     
-    let zipFile = path.join(options.archivedirectory, `${convertUnrealPlatformNametoFolderPlatformName(options.platform)}.zip`);
+    let zipFile = path.join(options.archivedirectory, `${convertUnrealPlatformNametoFolderPlatformName(options)}.zip`);
     return new Promise((resolve, reject) => {
         let output = fs.createWriteStream(zipFile);
         let archive = archiver('zip', {
@@ -69,7 +69,7 @@ async function removeZipApplication(options){
 }
 
 function getappBuildFolderPath(options){
-    let platform = convertUnrealPlatformNametoFolderPlatformName(options.platform);
+    let platform = convertUnrealPlatformNametoFolderPlatformName(options);
     const buildPackPath = path.join(options.archivedirectory, platform);
     return buildPackPath;
 }
