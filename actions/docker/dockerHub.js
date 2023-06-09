@@ -27,22 +27,22 @@ const tagImage = (imageName, repositoryName, tag) => {
     }
   };
   
-  const pushImage = (repositoryName) => {
-    try {
-      execSync(`docker push ${repositoryName}`, { stdio: 'pipe' });
-      console.log(`Pushed image ${repositoryName} to Docker Hub`);
+const pushImage = (repositoryName) => {
+  try {
+    execSync(`docker push ${repositoryName}`, { stdio: 'pipe' });
+    console.log(`Pushed image ${repositoryName} to Docker Hub`);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+  }
+};
+
+const pullImage = (imageName) => {
+  try {
+      execSync(`docker pull ${imageName}`, { stdio: 'pipe' });
+      console.log(`Pulled image ${imageName} from Docker Hub`);
     } catch (error) {
       console.error(`Error: ${error.message}`);
     }
-  };
-
-  const pullImage = (imageName) => {
-    try {
-        execSync(`docker pull ${imageName}`, { stdio: 'pipe' });
-        console.log(`Pulled image ${imageName} from Docker Hub`);
-      } catch (error) {
-        console.error(`Error: ${error.message}`);
-      }
 }
 
 const removeImageLocally = (imageName) => {

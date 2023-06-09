@@ -9,6 +9,10 @@ const savedconfig = require('../configuration/savedconfig');
 const { getpluginfolder, removepluginfolder } = require('../actions/file/filemanager');
 const { uploadApp, uploadPlugin } = require('../actions/server/upload');
 const { zipAppFolder } = require('../actions/zip/zip');
+const checkDocker = require('../actions/docker/ensureDockerRunning');
+const dockerBuild = require('../actions/docker/dockerBuild');
+const dockerhub = require('../actions/docker/dockerHub');
+
 
 
 
@@ -61,13 +65,27 @@ const buildAppCommand = new Command('build')
       }
       else if (configData.buildmodule == 'app') {
         configData["appzipurl"] = await zipAppFolder(configData);
-       await uploadApp(configData)
+        await uploadApp(configData)
       }
     }
+
+    if(configData.buildmodule == "app" && configData.buildtype == "server" && configData.builddocker)
+    {
+      checkDocker();
+      dockerBuild();
+      if(configData.publishdocker)
+      {
+        dockerhub.loginToDockerHub();
+        dockerhub.pushImage('utkashx/yugserver');
+        dockerhub.removeImageLocally('utkashx/yugserver');
+      }
+    }
+    
 
     if (buildmodule == "plugin") {
       await removepluginfolder(configData);
     }
+    
 
   });
 

@@ -126,6 +126,20 @@ function getQuestions(buildKeys, existingdata) {
             message: 'Do you want to upload after Build',
             default: (answers) => { return existingdata.hasOwnProperty("upload") ? existingdata["upload"] : true },
             when: (answers) => { return buildKeys.includes('upload'); }
+        },
+        {
+            type: 'confirm',
+            name: 'builddocker',
+            message: 'Do you want to Build the Docker Image of the Server',
+            default: (answers) => { return existingdata.hasOwnProperty("builddocker") ? existingdata["builddocker"] : true },
+            when: (answers) => { return buildKeys.includes('builddocker'); }
+        },
+        {
+            type: 'confirm',
+            name: 'publishdocker',
+            message: 'Do you want to Publish the Docker Image of the Server',
+            default: (answers) => { return existingdata.hasOwnProperty("publishdocker") ? existingdata["publishdocker"] : true },
+            when: (answers) => { return buildKeys.includes('publishdocker'); }
         }
 
     ];

@@ -43,7 +43,9 @@ function getKeys(commandlinevalues={}){
         }
         if(commandType === "server")
         {
-            keys.push("servertargetname");   
+            keys.push("servertargetname");
+            keys.push("builddocker");
+            keys.push("publishdocker");
         }
     }
     
