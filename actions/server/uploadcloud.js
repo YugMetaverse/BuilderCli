@@ -5,6 +5,7 @@ const cliProgress = require('cli-progress');
 const color = require('colors-cli/toxic');
 const colors = require('ansi-colors');
 const loading = require('loading-cli');
+const path = require('path');
 
 const SIGN_APIURL = 'https://webapi.yugverse.com/files/signed-url';
 const API_URL = 'https://webapi.yugverse.com';
@@ -78,7 +79,7 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
                 if (response.statusCode === 200) {
                     progressBar.stop();
                     console.log('\nFile uploaded successfully');
-                    resolve()
+                    resolve(true)
                 } else {
                     reject(response.statusCode)
                     console.error(`\nError uploading file: ${response.statusCode}`);
@@ -90,12 +91,20 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
                 reject(error)
             });
 
+            request.on('drain', ()=>{
+                readableStream.resume();
+            });
+
             
 
             readableStream.on('data', (chunk) => {
-                request.write(chunk);
+                const canWriteMore = request.write(chunk);
                 uploadedBytes += chunk.length;
                 progressBar.update(uploadedBytes);
+
+                if(!canWriteMore) {
+                    readableStream.pause();
+                }
             });
 
             readableStream.on('end', () => {
@@ -116,13 +125,11 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
 
 async function updateAppUploadDataOnServer(options) {
     try {
-        const load = loading({
-            "text":"Updating App On Server",
-            "color":"yellow",
-            "interval":100,
-            "stream": process.stdout,
-            "frames":["◰", "◳", "◲", "◱"]
-          }).start();
+        // const load = loading({
+        //     "text":"Updating App On Server",
+        //     "color":"yellow",
+        //     "frames":["◰", "◳", "◲", "◱"]
+        //   }).start();
         const url = `${API_URL}/application/old`;
         const data = JSON.stringify(options);
         try {
@@ -134,7 +141,8 @@ async function updateAppUploadDataOnServer(options) {
                 }
             });
             const jsonResponse = await response.json();
-            load.stop();
+            console.log(`Data Updated on Server: ${jsonResponse.message} \n`)
+            // load.stop();
             return jsonResponse;
         } catch (error) {
             console.error(error);
