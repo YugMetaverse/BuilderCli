@@ -55,6 +55,9 @@ const buildAppCommand = new Command('build')
     if (configData.tag) { await gitActions.SwitchTag(configData.tag); }
 
     await buildApplication(configData);
+
+    
+
     if (configData.upload) {
       if (configData.buildmodule == 'plugin') {
        await uploadPlugin(configData)

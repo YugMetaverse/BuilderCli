@@ -79,7 +79,7 @@ const uploadApp = async (options) => {
         const fileSize = fs.statSync(options.appzipurl).size;
         const fileStream = fs.createReadStream(options.appzipurl);
         const { uploadedUrl } = await uploadFileToCloud('build.zip', options.appzipurl);
-        options.appUrl = uploadedUrl;
+        options.url = uploadedUrl;
         const progressBar = new cliProgress.SingleBar({
             format: 'Upload Progress |' + colors.yellowBright('{bar}') + '| {percentage}% | {value}/{total}',
             barCompleteChar: '\u2588',

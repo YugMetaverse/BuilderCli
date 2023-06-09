@@ -18,7 +18,7 @@ async function getSignedUrl(filename) {
             });
             response.on('end', () => {
                 const result = JSON.parse(data);
-                resolve(result.signedUrl);
+                resolve(result);
             });
         }).on('error', (error) => {
             reject(error);
@@ -29,6 +29,7 @@ async function uploadFileToCloud(filename, filePath) {
     return new Promise(async (resolve, reject) => {
         try {
             const { signedUrl, uploadedUrl } = await getSignedUrl(filename);
+           console.log(uploadedUrl);
             if (!signedUrl) {
                 console.error('Failed to get signed URL');
                 reject('Failed to get signed URL')
