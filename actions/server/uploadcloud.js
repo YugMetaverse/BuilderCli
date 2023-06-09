@@ -138,30 +138,81 @@ function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
 
 }
 
+// async function updateAppUploadDataOnServer(options) {
+//     try {
+//         // const load = loading({
+//         //     "text":"Updating App On Server",
+//         //     "color":"yellow",
+//         //     "frames":["◰", "◳", "◲", "◱"]
+//         //   }).start();
+//         const url = `${API_URL}/application/old`;
+//         const data = JSON.stringify(options);
+//         try {
+//             const response = await fetch(url, {
+//                 method: 'POST',
+//                 body: data,
+//                 headers: {
+//                     'Content-Type': 'application/json'
+//                 }
+//             });
+//             const jsonResponse = await response.json();
+//             console.log(`Data Updated on Server: ${jsonResponse.message} \n`)
+//             // load.stop();
+//             return jsonResponse;
+//         } catch (error) {
+//             console.error(error);
+//         }
+//     } catch (error) {
+//         console.log("Error in Updating File", error);
+//     }
+// }
+
 async function updateAppUploadDataOnServer(options) {
     try {
-        // const load = loading({
-        //     "text":"Updating App On Server",
-        //     "color":"yellow",
-        //     "frames":["◰", "◳", "◲", "◱"]
-        //   }).start();
-        const url = `${API_URL}/application/old`;
+        const url = new URL(`${API_URL}/application/old`);
         const data = JSON.stringify(options);
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                body: data,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+        const load = loading({
+            "text":"Updating App On Server",
+            "color":"yellow",
+            "frames":["◰", "◳", "◲", "◱"]
+          }).start();
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+            },
+            hostname: url.hostname,
+            path: url.pathname,
+            protocol: url.protocol,
+            port: url.port
+        };
+
+        return new Promise((resolve, reject) => {
+            const req = https.request(requestOptions, (res) => {
+                let responseBody = '';
+
+                res.on('data', (chunk) => {
+                    responseBody += chunk;
+                });
+
+                res.on('end', () => {
+                    load.stop();
+                    const jsonResponse = JSON.parse(responseBody);
+                    console.log(`Data Updated on Server: ${jsonResponse.message} \n`);
+                    resolve(jsonResponse);
+                });
             });
-            const jsonResponse = await response.json();
-            console.log(`Data Updated on Server: ${jsonResponse.message} \n`)
-            // load.stop();
-            return jsonResponse;
-        } catch (error) {
-            console.error(error);
-        }
+
+            req.on('error', (error) => {
+                console.error(error);
+                reject(error);
+            });
+
+            req.write(data);
+            req.end();
+        });
     } catch (error) {
         console.log("Error in Updating File", error);
     }

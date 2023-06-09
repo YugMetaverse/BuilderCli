@@ -35,6 +35,8 @@ async function zipAppFolder(options){
         hideCursor: true
     });
     progressBar.start(totalSize, 0);
+
+    let processedBytes = 0;
     
     let zipFile = path.join(options.archivedirectory, `${convertUnrealPlatformNametoFolderPlatformName(options)}.zip`);
     return new Promise((resolve, reject) => {
@@ -46,7 +48,11 @@ async function zipAppFolder(options){
             progressBar.update(progress.fs.processedBytes);
             // const percentage = (progress.fs.processedBytes / totalSize) * 100;
             // process.stdout.write(`\rArchiving: ${percentage.toFixed(2)}% done`);
-          });          
+          });        
+        // archive.on('data', (data) => {
+        //     processedBytes += data.length;
+        //     progressBar.update(processedBytes);
+        // });  
         output.on('close', function () {
             progressBar.stop();
             console.log('\n\nArchive Created '+archive.pointer() + ' total bytes');
