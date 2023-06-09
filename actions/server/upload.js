@@ -4,7 +4,6 @@ const FormData = require('form-data');
 const cliProgress = require('cli-progress');
 const colors = require('ansi-colors');
 const path = require('path');
-const { uploadFileToCloud } = require('./upload-cloud')
 // http://127.0.0.1:8080/
 const API_URL = 'webapi.yugverse.com';
 

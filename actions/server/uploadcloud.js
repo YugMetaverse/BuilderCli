@@ -5,9 +5,10 @@ const cliProgress = require('cli-progress');
 const color = require('colors-cli/toxic');
 const colors = require('ansi-colors');
 const loading = require('loading-cli');
+const path = require('path');
 
 const SIGN_APIURL = 'https://webapi.yugverse.com/files/signed-url';
-const API_URL = 'webapi.yugverse.com';
+const API_URL = 'https://webapi.yugverse.com';
 async function getSignedUrl(fileextension) {
     return new Promise((resolve, reject) => {
         const requestUrl = new URL(SIGN_APIURL);
@@ -52,36 +53,14 @@ const uploadApp = async (options) => {
 
 
 // This is generic Function to upload any file to a signed url
-async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
+function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
+    let promiseResolved = false;
     return new Promise(async (resolve, reject) => {
         try {
-            const requestOptions = {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/octet-stream' },
-            };
-
-            const request = https.request(cloudstoragesignedurl, requestOptions, (response) => {
-                if (response.statusCode === 200) {
-                    progressBar.stop();
-
-                    console.log('\nFile uploaded successfully');
-                    resolve()
-                } else {
-                    reject(response.statusCode)
-                    console.error(`\nError uploading file: ${response.statusCode}`);
-                }
-            });
-
-            request.on('error', (error) => {
-                console.error('Error uploading file:', error);
-                reject(error)
-            });
-
             // Using a stream to read the file
             const readableStream = fs.createReadStream(localfilepath);
             const fileSize = fs.statSync(localfilepath).size;
             let uploadedBytes = 0;
-
             // Create a progress bar
             const progressBar = new cliProgress.SingleBar({
                 format: 'Upload Progress |' + colors.yellowBright('{bar}') + '| {percentage}% | {value}/{total}',
@@ -91,10 +70,56 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
             });
             progressBar.start(fileSize, 0);
 
+
+            const requestOptions = {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/octet-stream' },
+            };
+
+            const request = https.request(cloudstoragesignedurl, requestOptions, (response) => {
+                if (response.statusCode === 200) {
+                    progressBar.stop();
+                    console.log('\nFile uploaded successfully');
+                    promiseResolved = true;
+                    resolve(true);
+                } else {
+                    console.error(`\nError uploading file: ${response.statusCode}`);
+                    reject(response.statusCode);
+                }
+            });
+
+            request.on('error', (error) => {
+                console.error('Error uploading file:', error);
+                reject(error);
+            });
+            
+            request.on('timeout', () => {
+                request.abort();
+                reject(new Error('Request timed out'));
+            });
+
+            request.on('close', () => {
+                console.log('File upload completed');
+                if (!promiseResolved) {
+                    progressBar.stop();
+                    resolve(true);
+                }
+            });
+
+            request.on('drain', ()=>{
+                readableStream.resume();
+            });
+
+            
+
             readableStream.on('data', (chunk) => {
-                request.write(chunk);
+                const canWriteMore = request.write(chunk);
                 uploadedBytes += chunk.length;
                 progressBar.update(uploadedBytes);
+
+                if(!canWriteMore) {
+                    readableStream.pause();
+                }
             });
 
             readableStream.on('end', () => {
@@ -113,82 +138,89 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
 
 }
 
-async function updateAppUploadDataOnServer(options){
+async function updateAppUploadDataOnServer(options) {
     try {
-
-        const load = loading("Updating Data on Server".blue).start();
-
-        const resp = await new Promise((resolve, reject) => {
-
-            const request = https.request({
-                hostname: API_URL,
-                path: '/application/old',
+        // const load = loading({
+        //     "text":"Updating App On Server",
+        //     "color":"yellow",
+        //     "frames":["◰", "◳", "◲", "◱"]
+        //   }).start();
+        const url = `${API_URL}/application/old`;
+        const data = JSON.stringify(options);
+        try {
+            const response = await fetch(url, {
                 method: 'POST',
-                // headers: formData.getHeaders(),
-                ...options,
+                body: data,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
-
-            request.on('response', (response) => {
-                let responseData = '';
-                response.on('data', (chunk) => {
-                    responseData += chunk;
-                });
-                response.on('end', () => {
-                    load.stop();
-                    console.log('\n \n Request complete. with response' + responseData + '\n \n');
-                    resolve(responseData);
-                });
-            });
-
-            request.on('error', (error) => {
-                console.error(`Error with request: ${error}`);
-                reject(error);
-            });
-
-            request.on('close', () => {
-                console.log('Successfully updated on Server');
-                resolve();
-            });
-        });
-
-        return resp;
+            const jsonResponse = await response.json();
+            console.log(`Data Updated on Server: ${jsonResponse.message} \n`)
+            // load.stop();
+            return jsonResponse;
+        } catch (error) {
+            console.error(error);
+        }
     } catch (error) {
         console.log("Error in Updating File", error);
     }
 }
 
-async function updatePluginUploadDataOnServer(options){
-    const response = await new Promise((resolve, reject) => {
-        const request = https.request({
-            hostname: API_URL,
-            path: '/items/uploadplugin',
-            method: 'POST',
-            headers: formData.getHeaders(),
-            ...options,
-        });
-        request.on('response', (response) => {
-            let responseData = '';
-            response.on('data', (chunk) => {
-                responseData += chunk;
+async function updatePluginUploadDataOnServer(options) {
+    try {
+        const load = loading("Updating Plugin on Server".blue).start();
+        const url = `${API_URL}/items/uploadplugin`;
+        const data = JSON.stringify({plugin:options});
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
-            response.on('end', () => {
-                console.log('\nRequest complete.');
-                resolve(responseData);
-            });
-        });
+            const jsonResponse = await response.json();
+            load.stop();
+            console.log(jsonResponse)
+            return jsonResponse;
+        } catch (error) {
+            console.error(error);
+        }
+    } catch (error) {
+        console.log("Error in Updating File", error);
+    }
+    // const response = await new Promise((resolve, reject) => {
+    //     const request = https.request({
+    //         hostname: API_URL,
+    //         path: '/items/uploadplugin',
+    //         method: 'POST',
+    //         headers: formData.getHeaders(),
+    //         ...options,
+    //     });
+    //     request.on('response', (response) => {
+    //         let responseData = '';
+    //         response.on('data', (chunk) => {
+    //             responseData += chunk;
+    //         });
+    //         response.on('end', () => {
+    //             console.log('\nRequest complete.');
+    //             resolve(responseData);
+    //         });
+    //     });
 
-        request.on('error', (error) => {
-            console.error(`Error with request: ${error}`);
-            reject(error);
-        });
+    //     request.on('error', (error) => {
+    //         console.error(`Error with request: ${error}`);
+    //         reject(error);
+    //     });
 
-        request.on('close', () => {
-            console.log('File upload completed');
-            resolve();
-        });
-    });
+    //     request.on('close', () => {
+    //         console.log('File upload completed');
+    //         resolve();
+    //     });
+    // });
 
-    return response;
+    // return response;
 }
 
 

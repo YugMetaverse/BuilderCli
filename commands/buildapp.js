@@ -89,7 +89,7 @@ const buildAppCommand = new Command('build')
       await removepluginfolder(configData);
     }
     
-
+    console.log("Build Complete");
   });
 
 module.exports = buildAppCommand;
