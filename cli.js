@@ -7,7 +7,8 @@ const testCommand = require('./commands/test');
 const buildWorker = require('./commands/buildworker');
 const chalk = require('chalk');
 const runAppCommand = require("./commands/runApp");
-
+// const debugasync = require('./actions/debug/debugasync');
+// debugasync();
 
 const program = new Command();
 

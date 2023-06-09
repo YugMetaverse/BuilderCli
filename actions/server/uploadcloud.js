@@ -53,7 +53,8 @@ const uploadApp = async (options) => {
 
 
 // This is generic Function to upload any file to a signed url
-async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
+function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
+    let promiseResolved = false;
     return new Promise(async (resolve, reject) => {
         try {
             // Using a stream to read the file
@@ -79,16 +80,30 @@ async function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
                 if (response.statusCode === 200) {
                     progressBar.stop();
                     console.log('\nFile uploaded successfully');
-                    resolve(true)
+                    promiseResolved = true;
+                    resolve(true);
                 } else {
-                    reject(response.statusCode)
                     console.error(`\nError uploading file: ${response.statusCode}`);
+                    reject(response.statusCode);
                 }
             });
 
             request.on('error', (error) => {
                 console.error('Error uploading file:', error);
-                reject(error)
+                reject(error);
+            });
+            
+            request.on('timeout', () => {
+                request.abort();
+                reject(new Error('Request timed out'));
+            });
+
+            request.on('close', () => {
+                console.log('File upload completed');
+                if (!promiseResolved) {
+                    progressBar.stop();
+                    resolve(true);
+                }
             });
 
             request.on('drain', ()=>{
