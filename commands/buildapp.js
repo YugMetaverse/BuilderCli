@@ -54,7 +54,7 @@ const buildAppCommand = new Command('build')
     if (configData.branch) { await gitActions.SwitchBranch(configData.branch); }
     if (configData.tag) { await gitActions.SwitchTag(configData.tag); }
 
-    await buildApplication(configData);
+    // await buildApplication(configData);
 
     
 
@@ -63,7 +63,7 @@ const buildAppCommand = new Command('build')
        await uploadPlugin(configData)
       }
       else if (configData.buildmodule == 'app') {
-        configData["appzipurl"] = await zipAppFolder(configData);
+        configData["appzipurl"] = '/Users/ravirawat/Desktop/Mac.zip' //await zipAppFolder(configData);
        await uploadApp(configData)
       }
     }

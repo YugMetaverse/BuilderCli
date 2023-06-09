@@ -4,6 +4,8 @@ const FormData = require('form-data');
 const cliProgress = require('cli-progress');
 const colors = require('ansi-colors');
 const path = require('path');
+const { uploadFileToCloud } = require('./upload-cloud')
+// http://127.0.0.1:8080/
 const API_URL = 'webapi.yugverse.com';
 
 //TODO:move url to config
@@ -64,13 +66,11 @@ const uploadPlugin = async (options) => {
             progressBar.stop();
             console.log('File upload completed');
             resolve();
-          });
+        });
     });
 
     return response;
 };
-
-
 
 
 const uploadApp = async (options) => {
@@ -78,18 +78,22 @@ const uploadApp = async (options) => {
         let uploadedSize = 0;
         const fileSize = fs.statSync(options.appzipurl).size;
         const fileStream = fs.createReadStream(options.appzipurl);
-
+        const { uploadedUrl } = await uploadFileToCloud('build.zip', options.appzipurl);
+        options.appUrl = uploadedUrl;
         const progressBar = new cliProgress.SingleBar({
             format: 'Upload Progress |' + colors.yellowBright('{bar}') + '| {percentage}% | {value}/{total}',
             barCompleteChar: '\u2588',
             barIncompleteChar: '-',
             hideCursor: true
         });
+
+
+
         progressBar.start(fileSize, 0);
 
         const formData = new FormData();
         formData.append("application", JSON.stringify(options))
-        formData.append('file', fileStream, { filename: 'build.zip' });
+        // formData.append('file', fileStream, { filename: 'build.zip' });
         formData.on('data', (chunk) => {
             uploadedSize += chunk.length;
             const percentage = (uploadedSize / fileSize) * 100;
@@ -113,7 +117,7 @@ const uploadApp = async (options) => {
                     responseData += chunk;
                 });
                 response.on('end', () => {
-                    console.log('Request complete.');
+                    console.log('\n \n Request complete. with response' + responseData + '\n \n');
                     resolve(responseData);
                 });
             });
@@ -122,14 +126,14 @@ const uploadApp = async (options) => {
                 console.error(`Error with request: ${error}`);
                 reject(error);
             });
-    
+
             formData.pipe(request);
 
             request.on('close', () => {
                 progressBar.stop();
                 console.log('File upload completed');
                 resolve();
-              });
+            });
         });
 
         return resp;
@@ -139,7 +143,9 @@ const uploadApp = async (options) => {
 };
 
 
-  
+
+
+
 module.exports = {
     uploadPlugin,
     uploadApp,
