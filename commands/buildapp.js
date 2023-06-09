@@ -7,7 +7,7 @@ const availableValues = require('../configuration/availablevalues');
 const { validatebuildcli } = require('../helpers/validation');
 const savedconfig = require('../configuration/savedconfig');
 const { getpluginfolder, removepluginfolder } = require('../actions/file/filemanager');
-const { uploadApp, uploadPlugin } = require('../actions/server/upload');
+const { uploadApp, uploadPlugin } = require('../actions/server/uploadcloud');
 const { zipAppFolder } = require('../actions/zip/zip');
 const checkDocker = require('../actions/docker/ensureDockerRunning');
 const dockerBuild = require('../actions/docker/dockerBuild');
@@ -58,7 +58,7 @@ const buildAppCommand = new Command('build')
     if (configData.branch) { await gitActions.SwitchBranch(configData.branch); }
     if (configData.tag) { await gitActions.SwitchTag(configData.tag); }
 
-    await buildApplication(configData);
+    //await buildApplication(configData);
 
     
 

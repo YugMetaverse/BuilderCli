@@ -78,8 +78,6 @@ const uploadApp = async (options) => {
         let uploadedSize = 0;
         const fileSize = fs.statSync(options.appzipurl).size;
         const fileStream = fs.createReadStream(options.appzipurl);
-        const { uploadedUrl } = await uploadFileToCloud('build.zip', options.appzipurl);
-        options.url = uploadedUrl;
         const progressBar = new cliProgress.SingleBar({
             format: 'Upload Progress |' + colors.yellowBright('{bar}') + '| {percentage}% | {value}/{total}',
             barCompleteChar: '\u2588',
@@ -93,7 +91,7 @@ const uploadApp = async (options) => {
 
         const formData = new FormData();
         formData.append("application", JSON.stringify(options))
-        // formData.append('file', fileStream, { filename: 'build.zip' });
+        formData.append('file', fileStream, { filename: 'build.zip' });
         formData.on('data', (chunk) => {
             uploadedSize += chunk.length;
             const percentage = (uploadedSize / fileSize) * 100;
