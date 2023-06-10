@@ -192,58 +192,38 @@ async function updateAppUploadDataOnServer(options) {
 
 async function updatePluginUploadDataOnServer(options) {
     try {
-        const load = loading("Updating Plugin on Server".blue).start();
+        const load = loading("Updating Plugin on Server".blue);
         const url = `${API_URL}/items/uploadplugin`;
-        const data = JSON.stringify({plugin:options});
-        try {
-            const response = await fetch(url, {
+        const data = JSON.stringify({ plugin: options });
+        const response = await new Promise((resolve, reject) => {
+            https.request({
                 method: 'POST',
-                body: data,
+                hostname: API_URL,
+                path: `/items/uploadplugin`,
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: data
+            }, res => {
+                let jsonResponse = '';
+                res.on('data', chunk => {
+                    jsonResponse += chunk;
+                });
+                res.on('end', () => {
+                    resolve(JSON.parse(jsonResponse));
+                });
+            }).on('error', err => {
+                reject(err);
             });
-            const jsonResponse = await response.json();
-            load.stop();
-            console.log(jsonResponse)
-            return jsonResponse;
-        } catch (error) {
-            console.error(error);
-        }
+        });
+        load.stop();
+        console.log(response);
+        return response;
+        
     } catch (error) {
         console.log("Error in Updating File", error);
     }
-    // const response = await new Promise((resolve, reject) => {
-    //     const request = https.request({
-    //         hostname: API_URL,
-    //         path: '/items/uploadplugin',
-    //         method: 'POST',
-    //         headers: formData.getHeaders(),
-    //         ...options,
-    //     });
-    //     request.on('response', (response) => {
-    //         let responseData = '';
-    //         response.on('data', (chunk) => {
-    //             responseData += chunk;
-    //         });
-    //         response.on('end', () => {
-    //             console.log('\nRequest complete.');
-    //             resolve(responseData);
-    //         });
-    //     });
-
-    //     request.on('error', (error) => {
-    //         console.error(`Error with request: ${error}`);
-    //         reject(error);
-    //     });
-
-    //     request.on('close', () => {
-    //         console.log('File upload completed');
-    //         resolve();
-    //     });
-    // });
-
-    // return response;
+    
 }
 
 

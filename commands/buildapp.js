@@ -58,19 +58,19 @@ const buildAppCommand = new Command('build')
     if (configData.branch) { await gitActions.SwitchBranch(configData.branch); }
     if (configData.tag) { await gitActions.SwitchTag(configData.tag); }
 
-    // await buildApplication(configData);
+    await buildApplication(configData);
 
     
 
-    // if (configData.upload) {
-    //   if (configData.buildmodule == 'plugin') {
-    //    await uploadPlugin(configData)
-    //   }
-    //   else if (configData.buildmodule == 'app') {
-    //     configData["appzipurl"] = await zipAppFolder(configData);
-    //     await uploadApp(configData)
-    //   }
-    // }
+    if (configData.upload) {
+      if (configData.buildmodule == 'plugin') {
+       await uploadPlugin(configData)
+      }
+      else if (configData.buildmodule == 'app') {
+        configData["appzipurl"] = await zipAppFolder(configData);
+        await uploadApp(configData)
+      }
+    }
 
     if(configData.buildmodule == "app" && configData.buildtype == "server" && configData.builddocker)
     {
