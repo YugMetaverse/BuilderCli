@@ -138,34 +138,6 @@ function uploadFileToSignedUrl(cloudstoragesignedurl, localfilepath) {
 
 }
 
-// async function updateAppUploadDataOnServer(options) {
-//     try {
-//         // const load = loading({
-//         //     "text":"Updating App On Server",
-//         //     "color":"yellow",
-//         //     "frames":["◰", "◳", "◲", "◱"]
-//         //   }).start();
-//         const url = `${API_URL}/application/old`;
-//         const data = JSON.stringify(options);
-//         try {
-//             const response = await fetch(url, {
-//                 method: 'POST',
-//                 body: data,
-//                 headers: {
-//                     'Content-Type': 'application/json'
-//                 }
-//             });
-//             const jsonResponse = await response.json();
-//             console.log(`Data Updated on Server: ${jsonResponse.message} \n`)
-//             // load.stop();
-//             return jsonResponse;
-//         } catch (error) {
-//             console.error(error);
-//         }
-//     } catch (error) {
-//         console.log("Error in Updating File", error);
-//     }
-// }
 
 async function updateAppUploadDataOnServer(options) {
     try {

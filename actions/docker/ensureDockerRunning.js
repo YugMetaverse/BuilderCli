@@ -17,7 +17,7 @@ const checkDocker = () => {
   const platform = os.platform();
   try {
     const stdout = execSync(checkDockerCommand[platform], { stdio: 'pipe' }).toString();
-    const isDockerRunning = stdout.includes('Up') || stdout.includes('Docker Desktop');
+    const isDockerRunning = stdout.includes('Up') || stdout.includes('Docker Desktop') || stdout.includes('Started Docker Application Container Engine');
       if (isDockerRunning) {
         console.log('Docker is running.');
       }
