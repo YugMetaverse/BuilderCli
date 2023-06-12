@@ -2,17 +2,22 @@ const https = require('https');
 const fs = require('fs');
 const https = require('https');
 
-const downloadZipFromServer = (url) => {
+const API_URL='https://webapi.yugverse.com'
+const { extractZip } = require('./../zip/zip')
+
+const downloadZipFromServer = async (url) => {
+   
   return new Promise((resolve, reject) => {
     https.get(url, (response) => {
       const chunks = [];
       response.on('data', (chunk) => {
         chunks.push(chunk);
       });
-      response.on('end', () => {
+      response.on('end', async () => {
         const zipData = Buffer.concat(chunks);
         fs.writeFileSync('./downloaded-file.zip', zipData);
-        resolve();
+        await extractZip('./downloaded-file.zip');
+        resolve(true);
       });
 
     }).on('error', (error) => {
@@ -20,10 +25,9 @@ const downloadZipFromServer = (url) => {
     });
   });
 };
-
 const getLatestAppUrlFromServer = () => {
   return new Promise((resolve, reject) => {
-    https.get('https://your-api-url', (response) => {
+    https.get(`${API_URL}/yug-app`, (response) => {
       let data = [];
       response.on('data', (chunk) => {
         data.push(chunk);
@@ -39,6 +43,38 @@ const getLatestAppUrlFromServer = () => {
   });
 };
 
+const startApp = async (platform) => {
+  let url = await getLatestAppUrlFromServer(platform);
+  await downloadZipFromServer();
+  // Determine the appropriate command or script to run the executable based on the platform
+  const command = '';
+  switch (platform) {
+    case 'Windows':
+      command = `./extracted-files/YugGAS-Windows-Shipping.exe`;
+      break;
+    case 'Mac':
+      command = `./extracted-files/YugGAS-Mac-Shipping.app`;
+      break;
+    case 'Linux':
+      command = `./extracted-files/YugGAS-Linux-Shipping.exe`;
+      break;
+    default:
+      throw new Error('Unsupported platform');
+  }
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error running executable: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`Error output: ${stderr}`);
+      return;
+    }
+    console.log(`Executable started successfully: ${stdout}`);
+  });
+};
+
 
 
 
@@ -48,5 +84,6 @@ const getLatestAppUrlFromServer = () => {
 
 module.exports = {
   downloadZipFromServer,
-  getLatestAppUrlFromServer
+  getLatestAppUrlFromServer,
+  startApp
 }

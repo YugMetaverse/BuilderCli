@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const cliProgress = require('cli-progress');
 const colors = require('ansi-colors');
+const AdmZip = require('adm-zip');
 const {convertUnrealPlatformNametoFolderPlatformName } = require('../../helpers/lib');
 
 function getTotalSize(directory) {
@@ -68,6 +69,20 @@ async function zipAppFolder(options){
     });
 }
 
+const extractZip = (filePath) => {
+  return new Promise((resolve, reject) => {
+    const zip = new AdmZip(filePath);
+
+    // Extract all files to a specified directory
+    zip.extractAllTo('./extracted-files/', (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve('Files extracted successfully');
+      }
+    });
+  });
+};
 async function removeZipApplication(options){
     const buildPackPath =getappBuildFolderPath(options);
     let zipFile = `${buildPackPath}.zip`;
@@ -82,5 +97,6 @@ function getappBuildFolderPath(options){
 
 module.exports = {
     zipAppFolder,
-    removeZipApplication
+    removeZipApplication,
+    extractZip
 };
