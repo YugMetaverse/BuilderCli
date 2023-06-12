@@ -58,7 +58,7 @@ const buildAppCommand = new Command('build')
     if (configData.branch) { await gitActions.SwitchBranch(configData.branch); }
     if (configData.tag) { await gitActions.SwitchTag(configData.tag); }
 
-    await buildApplication(configData);
+    // await buildApplication(configData);
 
     
 

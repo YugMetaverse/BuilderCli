@@ -22,6 +22,10 @@ program.addCommand(buildWorker);
 program.addCommand(testCommand);
 program.addCommand(runAppCommand);
 
+program.outputHelp = function () {
+  Command.prototype.outputHelp.call(this, (str) => chalk.yellowBright(str));
+};
+
 figlet("Yug Metaverse Builder", async function (err, asciidraw) {
   console.log(chalk.yellowBright(asciidraw) + '\n');
   // console.log(chalk.green(JSON.stringify(configData, null, 4)));
