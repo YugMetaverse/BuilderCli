@@ -193,12 +193,12 @@ async function updateAppUploadDataOnServer(options) {
 async function updatePluginUploadDataOnServer(options) {
     try {
         const load = loading("Updating Plugin on Server".blue);
-        const url = `${API_URL}/items/uploadplugin`;
+        options["pluginid"] = "DGcEO9Ly6JcwVBVX";
         const data = JSON.stringify({ plugin: options });
         const response = await new Promise((resolve, reject) => {
             https.request({
                 method: 'POST',
-                hostname: API_URL,
+                hostname: 'webapi.yugverse.com',
                 path: `/items/uploadplugin`,
                 headers: {
                     'Content-Type': 'application/json'
