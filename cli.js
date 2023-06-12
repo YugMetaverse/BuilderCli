@@ -23,7 +23,12 @@ program.addCommand(testCommand);
 program.addCommand(runAppCommand);
 
 program.outputHelp = function () {
-  Command.prototype.outputHelp.call(this, (str) => chalk.yellowBright(str));
+  Command.prototype.outputHelp.call(this, (str) => {
+    const lines = str.split('\n');
+    const filteredLines = lines.filter(line => !line.includes('test'));
+    const formattedStr = filteredLines.join('\n');
+    return formattedStr;
+  });
 };
 
 figlet("Yug Metaverse Builder", async function (err, asciidraw) {
