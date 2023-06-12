@@ -75,7 +75,7 @@ const buildAppCommand = new Command('build')
     if(configData.buildmodule == "app" && configData.buildtype == "server" && configData.builddocker)
     {
       checkDocker();
-      dockerBuild();
+      await dockerBuild(configData);
       if(configData.publishdocker)
       {
         dockerhub.loginToDockerHub();
