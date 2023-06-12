@@ -38,6 +38,7 @@ const pushImage = (repositoryName) => {
 
 const pullImage = (imageName) => {
   try {
+    console.log('Started Pulling Docker Image');
       execSync(`docker pull ${imageName}`, { stdio: 'pipe' });
       console.log(`Pulled image ${imageName} from Docker Hub`);
     } catch (error) {

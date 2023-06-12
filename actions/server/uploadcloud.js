@@ -173,7 +173,7 @@ async function updateAppUploadDataOnServer(options) {
                 res.on('end', () => {
                     load.stop();
                     const jsonResponse = JSON.parse(responseBody);
-                    console.log(`Data Updated on Server: ${jsonResponse.message} \n`);
+                    console.log(`Data Updated on Server: ${jsonResponse.message}. Url is ${data.uploadedurl} \n`);
                     resolve(jsonResponse);
                 });
             });
@@ -227,7 +227,7 @@ async function updatePluginUploadDataOnServer(options) {
                 res.on('end', () => {
                     load.stop();
                     const jsonResponse = JSON.parse(responseBody);
-                    console.log(`Data Updated on Server: ${jsonResponse.message} \n`);
+                    console.log(`Data Updated on Server: ${jsonResponse} \n`);
                     resolve(jsonResponse);
                 });
             });
