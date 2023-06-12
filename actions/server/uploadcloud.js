@@ -6,6 +6,7 @@ const color = require('colors-cli/toxic');
 const colors = require('ansi-colors');
 const loading = require('loading-cli');
 const path = require('path');
+const {convertUnrealPlatformNametoFolderPlatformName} = require('../../helpers/lib')
 
 const SIGN_APIURL = 'https://webapi.yugverse.com/files/signed-url';
 const API_URL = 'https://webapi.yugverse.com';
@@ -37,7 +38,7 @@ async function getSignedUrl(fileextension) {
 const uploadPlugin = async (options) => {
     const { signedUrl, uploadedUrl } = await getSignedUrl("*.pak");
     options['uploadedurl'] = uploadedUrl;
-    let platformName = (options.platform === 'win32') ? 'Windows' : options.platform;
+    let platformName = convertUnrealPlatformNametoFolderPlatformName(options);
     const pluginPathName = path.join(options.projectbasepath, 'Plugins', options.pluginname, 'Saved', 'StagedBuilds', platformName, options.projectname, 'Plugins', options.pluginname, 'Content', 'Paks', platformName, `${options.pluginname}${options.projectname}-${platformName}.pak`);
     options["pakpath"] = pluginPathName;
     await uploadFileToSignedUrl(signedUrl, pluginPathName);
