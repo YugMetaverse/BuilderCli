@@ -194,8 +194,10 @@ async function updateAppUploadDataOnServer(options) {
 async function updatePluginUploadDataOnServer(options) {
     try {
         const url = new URL(`${API_URL}/items/uploadplugin`);
-        options["pluginid"] = "DGcEO9Ly6JcwVBVX";
-        const data = JSON.stringify(options);
+        let uploadattr = {...options};
+        uploadattr["pluginid"] = "DGcEO9Ly6JcwVBVX";
+        uploadattr["platform"] = convertUnrealPlatformNametoFolderPlatformName(options);
+        const data = JSON.stringify({ "plugin": uploadattr});
         const load = loading({
             "text":"Updating Plugin On Server",
             "color":"yellow",
