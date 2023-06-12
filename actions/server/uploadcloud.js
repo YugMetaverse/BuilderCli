@@ -192,37 +192,55 @@ async function updateAppUploadDataOnServer(options) {
 
 async function updatePluginUploadDataOnServer(options) {
     try {
-        const load = loading("Updating Plugin on Server".blue);
+        const url = new URL(`${API_URL}/items/uploadplugin`);
         options["pluginid"] = "DGcEO9Ly6JcwVBVX";
-        const data = JSON.stringify({ plugin: options });
-        const response = await new Promise((resolve, reject) => {
-            https.request({
-                method: 'POST',
-                hostname: 'webapi.yugverse.com',
-                path: `/items/uploadplugin`,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: data
-            }, res => {
-                let jsonResponse = '';
-                res.on('data', chunk => {
-                    jsonResponse += chunk;
+        const data = JSON.stringify(options);
+        const load = loading({
+            "text":"Updating Plugin On Server",
+            "color":"yellow",
+            "frames":["◰", "◳", "◲", "◱"]
+          }).start();
+
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': data.length
+            },
+            hostname: url.hostname,
+            path: url.pathname,
+            protocol: url.protocol,
+            port: url.port
+        };
+
+        return new Promise((resolve, reject) => {
+            const req = https.request(requestOptions, (res) => {
+                let responseBody = '';
+
+                res.on('data', (chunk) => {
+                    responseBody += chunk;
                 });
+
                 res.on('end', () => {
-                    resolve(JSON.parse(jsonResponse));
+                    load.stop();
+                    const jsonResponse = JSON.parse(responseBody);
+                    console.log(`Data Updated on Server: ${jsonResponse.message} \n`);
+                    resolve(jsonResponse);
                 });
-            }).on('error', err => {
-                reject(err);
             });
+
+            req.on('error', (error) => {
+                console.error(error);
+                reject(error);
+            });
+
+            req.write(data);
+            req.end();
         });
-        load.stop();
-        console.log(response);
-        return response;
-        
     } catch (error) {
-        console.log("Error in Updating File", error);
+        console.log("Error in Updating Pligin", error);
     }
+   
     
 }
 
