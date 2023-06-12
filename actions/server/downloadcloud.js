@@ -6,7 +6,7 @@ const API_URL='https://webapi.yugverse.com'
 const { extractZip } = require('./../zip/zip')
 
 const downloadZipFromServer = async (url) => {
-   
+
   return new Promise((resolve, reject) => {
     https.get(url, (response) => {
       const chunks = [];
@@ -45,7 +45,7 @@ const getLatestAppUrlFromServer = () => {
 
 const startApp = async (platform) => {
   let url = await getLatestAppUrlFromServer(platform);
-  await downloadZipFromServer();
+  await downloadZipFromServer(url);
   // Determine the appropriate command or script to run the executable based on the platform
   const command = '';
   switch (platform) {
