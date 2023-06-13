@@ -1,6 +1,7 @@
 const https = require('https');
 const fs = require('fs');
 
+
 const API_URL='https://webapi.yugverse.com'
 const { extractZip } = require('./../zip/zip')
 
@@ -24,9 +25,9 @@ const downloadZipFromServer = async (url) => {
     });
   });
 };
-const getLatestAppUrlFromServer = () => {
+const getLatestAppUrlFromServer = (platform) => {
   return new Promise((resolve, reject) => {
-    https.get(`${API_URL}/yug-app`, (response) => {
+    https.get(`${API_URL}/yug-app/${platform}/latest`, (response) => {
       let data = [];
       response.on('data', (chunk) => {
         data.push(chunk);
@@ -48,13 +49,13 @@ const startApp = async (platform) => {
   // Determine the appropriate command or script to run the executable based on the platform
   const command = '';
   switch (platform) {
-    case 'Windows':
+    case 'windows':
       command = `./extracted-files/YugGAS-Windows-Shipping.exe`;
       break;
-    case 'Mac':
+    case 'mac':
       command = `./extracted-files/YugGAS-Mac-Shipping.app`;
       break;
-    case 'Linux':
+    case 'linux':
       command = `./extracted-files/YugGAS-Linux-Shipping.exe`;
       break;
     default:

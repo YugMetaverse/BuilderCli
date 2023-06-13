@@ -12,6 +12,13 @@ let availableValues = {
         "release",
         "app",
         "plugin"
+    ],
+    "platforms": [
+        "windows",
+        "linux",
+        "mac",
+        "android",
+        "ios"
     ]
 }
 
