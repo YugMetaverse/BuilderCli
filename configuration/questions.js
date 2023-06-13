@@ -90,6 +90,12 @@ function getQuestions(buildKeys, existingdata) {
             default: (answers) => { return existingdata.hasOwnProperty("releaseversion") ? existingdata["releaseversion"] : "1.0"; },
             when: (answers) => {
                 return buildKeys.includes('releaseversion');
+            },
+            filter: (answer) => {
+                const major = Math.floor(answer);
+                const minor = Math.floor((answer - major) * 100);
+                const patch = Math.floor(((answer - major) * 100 - minor) * 100);
+                return `${major}.${minor}.${patch}`;
             }
         },
         {

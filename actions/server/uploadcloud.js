@@ -6,6 +6,7 @@ const color = require('colors-cli/toxic');
 const colors = require('ansi-colors');
 const loading = require('loading-cli');
 const path = require('path');
+const {convertUnrealPlatformNametoFolderPlatformName} = require('../../helpers/lib')
 
 const SIGN_APIURL = 'https://webapi.yugverse.com/files/signed-url';
 const API_URL = 'https://webapi.yugverse.com';
@@ -37,7 +38,7 @@ async function getSignedUrl(fileextension) {
 const uploadPlugin = async (options) => {
     const { signedUrl, uploadedUrl } = await getSignedUrl("*.pak");
     options['uploadedurl'] = uploadedUrl;
-    let platformName = (options.platform === 'win32') ? 'Windows' : options.platform;
+    let platformName = convertUnrealPlatformNametoFolderPlatformName(options);
     const pluginPathName = path.join(options.projectbasepath, 'Plugins', options.pluginname, 'Saved', 'StagedBuilds', platformName, options.projectname, 'Plugins', options.pluginname, 'Content', 'Paks', platformName, `${options.pluginname}${options.projectname}-${platformName}.pak`);
     options["pakpath"] = pluginPathName;
     await uploadFileToSignedUrl(signedUrl, pluginPathName);
@@ -172,7 +173,7 @@ async function updateAppUploadDataOnServer(options) {
                 res.on('end', () => {
                     load.stop();
                     const jsonResponse = JSON.parse(responseBody);
-                    console.log(`Data Updated on Server: ${jsonResponse.message} \n`);
+                    console.log(`Data Updated on Server: ${jsonResponse.message}. Url is ${data.uploadedurl} \n`);
                     resolve(jsonResponse);
                 });
             });
@@ -193,8 +194,10 @@ async function updateAppUploadDataOnServer(options) {
 async function updatePluginUploadDataOnServer(options) {
     try {
         const url = new URL(`${API_URL}/items/uploadplugin`);
-        options["pluginid"] = "DGcEO9Ly6JcwVBVX";
-        const data = JSON.stringify(options);
+        let uploadattr = {...options};
+        uploadattr["pluginid"] = "DGcEO9Ly6JcwVBVX";
+        uploadattr["platform"] = convertUnrealPlatformNametoFolderPlatformName(options);
+        const data = JSON.stringify({ "plugin": uploadattr});
         const load = loading({
             "text":"Updating Plugin On Server",
             "color":"yellow",
@@ -224,7 +227,7 @@ async function updatePluginUploadDataOnServer(options) {
                 res.on('end', () => {
                     load.stop();
                     const jsonResponse = JSON.parse(responseBody);
-                    console.log(`Data Updated on Server: ${jsonResponse.message} \n`);
+                    console.log(`Data Updated on Server: ${jsonResponse} \n`);
                     resolve(jsonResponse);
                 });
             });
