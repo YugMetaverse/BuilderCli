@@ -35,6 +35,7 @@ const getLatestAppUrlFromServer = (platform) => {
       });
       response.on('end', () => {
         const {url} = JSON.parse(Buffer.concat(data).toString());
+        console.log(url)
         resolve(url);
       });
 
@@ -63,7 +64,7 @@ const startApp = async (platform) => {
       throw new Error('Unsupported platform');
   }
 
-  exec(command, (error, stdout, stderr) => {
+  exec(`open ${command}` , (error, stdout, stderr) => {
     if (error) {
       console.error(`Error running executable: ${error.message}`);
       return;
