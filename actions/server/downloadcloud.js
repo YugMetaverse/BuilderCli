@@ -27,14 +27,15 @@ const downloadZipFromServer = async (url) => {
 };
 const getLatestAppUrlFromServer = (platform) => {
   return new Promise((resolve, reject) => {
-    https.get(`${API_URL}/yug-app/${platform}/latest`, (response) => {
+    //default aap id is =G8S7coutUORdDg7m
+    https.get(`${API_URL}/application/G8S7coutUORdDg7m/${platform}/latest`, (response) => {
       let data = [];
       response.on('data', (chunk) => {
         data.push(chunk);
       });
       response.on('end', () => {
-        const appUrl = JSON.parse(Buffer.concat(data).toString());
-        resolve(appUrl);
+        const {url} = JSON.parse(Buffer.concat(data).toString());
+        resolve(url);
       });
 
     }).on('error', (error) => {

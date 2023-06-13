@@ -9,7 +9,7 @@ const runAppCommand = new Command('run')
   .description('Run Yug Applications')
   .argument('<apptype>', 'Application Type to Run: server or client')
   .argument('[action]', 'Action to perform: start, stop, restart')
-  .addArgument(new Argument('[platform]', 'Run Platform:').choices(availableValues.platforms))
+  .addArgument(new Argument('[platform]', 'Platform Name :').choices(availableValues.platforms))
   .action(async (apptype, action,platform, options) => {
     if (apptype === 'server') {
       if (action === 'start') {
