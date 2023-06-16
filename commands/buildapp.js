@@ -1,5 +1,5 @@
 const { Command, Argument, Option } = require('commander');
-const { buildApplication } = require('../buildscripts/buildApp');
+const { buildApplication } = require('../scripts/buildApp');
 const gitActions = require('../actions/git/gitActions');
 const config = require('../configuration/config');
 const getKeys = require('../configuration/keys');
