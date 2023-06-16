@@ -1,5 +1,6 @@
 const https = require('https');
 const fs = require('fs');
+const { spawn } = require("child_process");
 
 
 const API_URL='https://webapi.yugverse.com'
@@ -45,17 +46,17 @@ const getLatestAppUrlFromServer = (platform) => {
   });
 };
 
-const startApp = async (platform) => {
-  let url = await getLatestAppUrlFromServer(platform);
-  await downloadZipFromServer(url);
+const startApp = async (options) => {
+  // let url = await getLatestAppUrlFromServer(platform);
+  // await downloadZipFromServer(url);
   // Determine the appropriate command or script to run the executable based on the platform
-  const command = '';
-  switch (platform) {
-    case 'windows':
+  let command = '';
+  switch (options.platform) {
+    case 'win64':
       command = `./extracted-files/YugGAS-Windows-Shipping.exe`;
       break;
-    case 'mac':
-      command = `./extracted-files/YugGAS-Mac-Shipping.app`;
+    case 'Mac':
+      command = `${options.buildappdownloaddir}/${options.platform}/YugGAS.app/Contents/MacOS/YugGAS`;
       break;
     case 'linux':
       command = `./extracted-files/YugGAS-Linux-Shipping.exe`;
@@ -64,16 +65,28 @@ const startApp = async (platform) => {
       throw new Error('Unsupported platform');
   }
 
-  exec(`open ${command}` , (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error running executable: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.error(`Error output: ${stderr}`);
-      return;
-    }
-    console.log(`Executable started successfully: ${stdout}`);
+  const args = ['-log'];
+  const opts = { };
+  return new Promise((resolve, reject) => {
+    const builder = spawn(command, args, opts);
+
+    builder.stdout.on("data", data => {
+        console.log(`stdout: ${data}`);
+    });
+
+    builder.stderr.on("data", data => {
+        console.log(`stderr: ${data}`);
+    });
+
+    builder.on('error', (error) => {
+        console.log(`error: ${error.message}`);
+        reject(error);
+    });
+
+    builder.on("close", code => {
+        console.log(`child process exited with code ${code}`);
+        resolve();
+    });
   });
 };
 

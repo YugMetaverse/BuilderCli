@@ -34,11 +34,11 @@ const buildAppCommand = new Command('build')
   .option('-b, --pluginbranch <char>', 'Branch to Build')
   .option('-t, --plugintag <char>', 'Tag of the Branch to Build')
   .option('-u, --upload', 'upload the build and packages')
-  .action(async (buildtype, buildmodule, pluginname, pluginid, options) => {
+  .action(async (buildtype, buildmodule, pluginname, options) => {
+    options["commandname"] = "build";
     options["buildtype"] = buildtype;
     options["buildmodule"] = buildmodule;
     if (pluginname) { options["pluginname"] = pluginname; }
-    if (pluginid) { options["pluginid"] = pluginid; }
 
     validatebuildcli(options);
 

@@ -65,8 +65,9 @@ function getMergedDataforKeysOnly(buildKeys, mergedConfigData) {
 }
 
 async function initConfig(buildKeys, overrideValues = {}, existingconfigData = {}) {
-    let neededData = getMergedDataforKeysOnly(buildKeys,mergeConfigAndOverride(overrideValues, existingconfigData));
-    let questions = getQuestions(buildKeys, neededData);
+    let allmergedData = mergeConfigAndOverride(overrideValues, existingconfigData)
+    let neededData = getMergedDataforKeysOnly(buildKeys,allmergedData);
+    let questions = getQuestions(buildKeys, neededData, allmergedData);
     const answer = await inquirer.prompt(questions);
     await writeConfig(answer);
     return answer;

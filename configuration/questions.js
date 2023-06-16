@@ -1,6 +1,6 @@
 const availableValues = require('../configuration/availablevalues');
 
-function getQuestions(buildKeys, existingdata) {
+function getQuestions(buildKeys, existingdata, additionalData = {}) {
     function getOptionDefault(propName) {
         return existingdata.hasOwnProperty(propName) ? existingdata[propName] : availableValues[propName][0];
     }
@@ -23,7 +23,8 @@ function getQuestions(buildKeys, existingdata) {
                     return ["win64", "Android", "Mac", "iOS", "Linux"];
                 }
             },
-            message: 'Select the Platform to Build',
+            message: 'Select the Platform:',
+            when: (answers) => { return buildKeys.includes('platform'); }
         },
         //buildconfig
         {
@@ -146,6 +147,24 @@ function getQuestions(buildKeys, existingdata) {
             message: 'Do you want to Publish the Docker Image of the Server',
             default: (answers) => { return existingdata.hasOwnProperty("publishdocker") ? existingdata["publishdocker"] : true },
             when: (answers) => { return buildKeys.includes('publishdocker'); }
+        },
+        {
+            type: 'input',
+            name: 'buildappdownloaddir',
+            message: 'Enter the Path where the app will be downloaded',
+            default: (answers) => { 
+                if (existingdata.hasOwnProperty("buildappdownloaddir")) {
+                    return existingdata["buildappdownloaddir"]
+                }
+                else {
+                    if(additionalData.hasOwnProperty("archivedirectory")){
+                        return additionalData.archivedirectory;
+                    } else {
+                        return "/Users/Packaged";
+                    }
+                }
+            },
+            when: (answers) => { return buildKeys.includes('buildappdownloaddir')} 
         }
 
     ];
